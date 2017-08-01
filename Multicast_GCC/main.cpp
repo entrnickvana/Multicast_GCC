@@ -1,22 +1,40 @@
-//My name is jonas
+
 #include<iostream>
 #include<string>
 #include "Vertex.h"
+#include "Edge.h"
+#include "Graph.h"
 
 using namespace std;
 
 int main()
 {
 
-	Vertex V1;
+	Graph G;
+	
+	Vertex VA1, VA2, VA3, VA4;
 
-	cout << V1.getName() << endl;
+	
 
-	V1.setName("Jillian");
+	VA1.color = 1;  VA1.name = "VA1";
+	VA2.color = 2;  VA2.name = "VA2";
+	VA3.color = 3;	VA3.name = "VA3";
+	VA4.color = 4;  VA4.name = "VA4";
 
-	cout << V1.getName() << endl;
+	G.addVertex(VA1);
+	G.addVertex(VA2);
+	
+	Edge* E1 = new Edge(VA1, VA2);
+
+	G.addEdge(*E1);
+
+	G.plot("GraphColoring1");
+
+	delete E1;
 
 	getchar();
+
+	
 
 	return 0;
 

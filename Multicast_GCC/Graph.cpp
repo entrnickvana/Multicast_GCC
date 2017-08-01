@@ -1,12 +1,59 @@
 
 
-#include "Graph.h";
-#include <iostream>;
-#include <fstream>;
+#include "Graph.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+
 
 using namespace std;
 
 Graph::Graph(){}
+Graph::~Graph(){}
+
+bool Graph::addEdge(Edge e)
+{
+    Edges.push_back(e);
+    return true;
+}
+
+bool Graph::addVertex(Vertex v)
+{
+    Vertices.push_back(v);
+    return true;
+}
+
+bool Graph::removeEdge(Edge e)
+{
+    for(unsigned i = 0; i < Edges.size(); i++)
+    {
+        if(e.toString().compare(Edges[i].toString()) == 0)
+        {
+			Edges.erase(Edges.begin() + i);
+            return true;
+        }else return false;
+    }
+
+    return false;
+   
+}
+
+bool Graph::removeVertex(Vertex v)
+{
+    for(unsigned i = 0; i < Vertices.size(); i++)
+    {
+        if(v.toString().compare(Vertices[i].toString()) == 0)
+        {
+            Vertices.erase(Vertices.begin() + i);
+            return true;
+        }else return false;
+        
+    }
+    return false;
+}
+
+
 
 void Graph::plot(string plotNumber)
 {
@@ -14,28 +61,27 @@ void Graph::plot(string plotNumber)
     ofstream graphFile;
     string x;
     x = plotNumber;
-    graphFile.open("gf" + x);
+    graphFile.open("gf" + x + ".txt");
     
 
     //Print beginning
     graphFile << "digraph G{\n";
 
     //Print each vertex
-    for(int i = 0; i < Vertices.size(); i++)
+    for(unsigned i = 0; i < Vertices.size(); i++)
     {
         graphFile << "\"" + Vertices[i].name + "\"\n"; 
     }
 
     //Print each Edge
-    for(int j = 0; j < Edges.size(); j++)
+    for(unsigned j = 0; j < Edges.size(); j++)
     {
-        graphFile << Edges[j].toString();
+        graphFile << "\"" + Edges[j].toString() + "\"";
     }
 
-
-    graphFile.close();
-
+    graphFile << "}";
     
+    graphFile.close();
 
 }
 

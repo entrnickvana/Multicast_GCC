@@ -9,15 +9,15 @@ using namespace std;
 
 Vertex::Vertex()
 {
-
 	name = "NoName";
 	color = 0;
 	std::string colorString = std::to_string(color);
 	cout << "I am a vertex " + name + " of color " + colorString << endl;
-
 }
 
-int Vertex::getColor()
+Vertex::~Vertex(){}
+
+long Vertex::getColor()
 {
 	return color;
 }
@@ -35,4 +35,10 @@ string Vertex::getName()
 void Vertex::setName(string newName)
 {
 	name = newName;
+}
+
+string Vertex::toString()
+{
+	string colorAsString = std::to_string(color);
+	return colorAsString;
 }

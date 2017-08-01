@@ -12,6 +12,7 @@ class Edge
 
     Edge();
     Edge(Vertex begin_, Vertex end_);
+	~Edge();
 
     Vertex begin;
     Vertex end;

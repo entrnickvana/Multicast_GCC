@@ -114,12 +114,18 @@
     <ClCompile Include="Edge.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="_File.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Edge.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="Packet.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="_File.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
