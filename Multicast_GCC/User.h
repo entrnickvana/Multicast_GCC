@@ -4,6 +4,9 @@
 #include<map>
 #include<iterator>
 #include<string>
+#include "Packet.h"
+
+using namespace std;
 
 class User
 {
@@ -20,7 +23,7 @@ public:
 	map<string, Packet> cachedPackets;
 
 
-	void cachePackets(map<string, Packet> packetsToCache);
+	void cachePackets(set<Packet> packetsToCache);
 	void addPacket(Packet p);
 	void removePacket(Packet p);
 

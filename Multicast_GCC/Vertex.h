@@ -1,7 +1,8 @@
 #pragma once
 
 #include<string>
-
+#include "Packet.h"
+#include "User.h"
 
 using namespace std;
 
@@ -14,6 +15,8 @@ public:
 
 	long color;
 	string name;
+	Packet requestedPacket;
+	User requestingUser;
 
 
 	long getColor();

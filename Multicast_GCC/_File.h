@@ -3,20 +3,22 @@
 #include<string>
 #include<vector>
 
-
 class _File
 {
     public:
-
         _File();
-        _File(unsigned long numberBytes);
-        _File(unsigned long numberBytes, unsigned int numOfPackets);
+        _File(string _fileName);
+        _File(string _fileName, unsigned long numberOfBytes);
+        _File(string _fileName, unsigned long numberOfBytes, unsigned int _numOfPackets);
         ~_File();
 
         string fileName;
         vector<Packet> packetsOfFile;
+        unsigned long numberOfBytes;
+        unsigned int numOfPackets;
 
-        void packetize(unsigned int numOfPackets);
+
+        void packetize(unsigned int _numOfPackets);
 
 };
 

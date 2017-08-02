@@ -1,6 +1,6 @@
 #include "User.h"
 #include "Packet.h"
-#include "_File"
+#include "_File.h"
 #include<string>
 #include<iterator>
 
@@ -9,7 +9,6 @@ User::User()
 {
     cacheSize = 0;
     remainingCapacity = 0;
-    cachedPackets = NULL;
 }
 
 

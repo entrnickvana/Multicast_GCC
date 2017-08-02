@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <iterator>
 
 
 using namespace std;
@@ -78,6 +79,14 @@ void Graph::plot(string plotNumber)
     {
         graphFile << "\"" + Edges[j].toString() + "\"";
     }
+
+/*  The more efficient traversal of a vector
+    for(vector<Edge>::iterator itr = Edges.begin(); itr != Edges.end(); ++itr)
+    {
+        graphFile << "\"" + ((Edge)itr)->toString() + "\"";
+
+    }
+*/
 
     graphFile << "}";
     
