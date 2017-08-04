@@ -11,8 +11,8 @@ Vertex::Vertex()
 {
 	name = "NoName";
 	color = 0;
-	std::string colorString = std::to_string(color);
-	cout << "I am a vertex " + name + " of color " + colorString << endl;
+	//std::string colorString = std::to_string(color);
+	//cout << "I am a vertex " + name + " of color " + colorString << endl;
 }
 
 Vertex::~Vertex(){}
@@ -39,6 +39,6 @@ void Vertex::setName(string newName)
 
 string Vertex::toString()
 {
-	string colorAsString = std::to_string(color);
+	string colorAsString = to_string(color);
 	return colorAsString;
 }

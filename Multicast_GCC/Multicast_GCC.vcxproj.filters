@@ -33,7 +33,7 @@
     <ClCompile Include="Packet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_File.cpp">
+    <ClCompile Include="Media.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,7 +53,7 @@
     <ClInclude Include="Packet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_File.h">
+    <ClInclude Include="Media.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

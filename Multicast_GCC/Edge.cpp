@@ -4,11 +4,18 @@
 #include<string>
 
 
-Edge::Edge(){}
+Edge::Edge()
+{
 
-Edge::~Edge(){}
 
-Edge::Edge(Vertex begin_, Vertex end_)
+}
+
+Edge::~Edge()
+{
+
+}
+
+Edge::Edge(Vertex* begin_, Vertex* end_)
 {
     begin = begin_;
     end = end_;
@@ -16,5 +23,5 @@ Edge::Edge(Vertex begin_, Vertex end_)
 
 string Edge::toString()
 {
-    return  begin.name + "\"" + " -> " + "\"" + end.name;
+    return  begin->name + "\"" + " -> " + "\"" + end->name;
 }

@@ -13,23 +13,23 @@ using namespace std;
 Graph::Graph(){}
 Graph::~Graph(){}
 
-bool Graph::addEdge(Edge e)
+bool Graph::addEdge(Edge* e)
 {
-    Edges.push_back(e);
+    Edges.push_back(*e);
     return true;
 }
 
-bool Graph::addVertex(Vertex v)
+bool Graph::addVertex(Vertex* v)
 {
-    Vertices.push_back(v);
+    Vertices.push_back(*v);
     return true;
 }
 
-bool Graph::removeEdge(Edge e)
+bool Graph::removeEdge(Edge* e)
 {
     for(unsigned i = 0; i < Edges.size(); i++)
     {
-        if(e.toString().compare(Edges[i].toString()) == 0)
+        if(e->toString().compare(Edges[i].toString()) == 0)
         {
 			Edges.erase(Edges.begin() + i);
             return true;
@@ -40,11 +40,11 @@ bool Graph::removeEdge(Edge e)
    
 }
 
-bool Graph::removeVertex(Vertex v)
+bool Graph::removeVertex(Vertex* v)
 {
     for(unsigned i = 0; i < Vertices.size(); i++)
     {
-        if(v.toString().compare(Vertices[i].toString()) == 0)
+        if(v->toString().compare(Vertices[i].toString()) == 0)
         {
             Vertices.erase(Vertices.begin() + i);
             return true;
@@ -60,8 +60,7 @@ void Graph::plot(string plotNumber)
 {
 
     ofstream graphFile;
-    string x;
-    x = plotNumber;
+    string x = plotNumber;
     graphFile.open("gf" + x + ".txt");
     
 

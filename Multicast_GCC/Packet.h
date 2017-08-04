@@ -1,31 +1,36 @@
-#pragma once
+
+#ifndef PACKET_H
+#define PACKET_H
 
 #include<vector>
 #include<string>
-#include "_File.h"
+//#include "Media.h"
+//#include "catalogFile.h"
 
 
 using namespace std;
 
+class Media;
 
 class Packet
 {
 public:
 
 	Packet();
-    Packet(_File _parentFile, unsigned int partitionNumber);
+	Packet(Media* parentMediaArg, unsigned int packetPartitionNumber);
 	~Packet();
 
 	long sizeInBits;
     long sizeInBytes;
     vector<char> data;
-	string fileName;
     unsigned int partitionNumber;
     string packetName;
-    _File parentFile;
+    Media* parentMedia;
 
 	string toString();
 
 
 };
+
+#endif
 

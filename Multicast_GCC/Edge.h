@@ -1,4 +1,6 @@
-#pragma once
+
+#ifndef EDGE_H
+#define EDGE_H
 
 #include "Vertex.h"
 #include "Edge.h"
@@ -11,13 +13,15 @@ class Edge
     public:
 
     Edge();
-    Edge(Vertex begin_, Vertex end_);
+    Edge(Vertex* begin_, Vertex* end_);
 	~Edge();
 
-    Vertex begin;
-    Vertex end;
+    Vertex* begin;
+    Vertex* end;
     string toString();
 
     private:
 
 };
+
+#endif

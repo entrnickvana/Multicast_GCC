@@ -1,4 +1,6 @@
-#pragma once
+
+#ifndef GRAPH_H
+#define GRAPH_H
 
 #include<vector>
 #include "Vertex.h"
@@ -15,10 +17,10 @@ class Graph
     vector<Vertex> Vertices;
     vector<Edge> Edges;
 
-	bool addVertex(Vertex v);
-	bool addEdge(Edge e);
-    bool removeEdge(Edge e);
-	bool removeVertex(Vertex v);
+	bool addVertex(Vertex* v);
+	bool addEdge(Edge* e);
+    bool removeEdge(Edge* e);
+	bool removeVertex(Vertex* v);
     void plot(string plotNumber);
 
 
@@ -27,3 +29,5 @@ class Graph
 
 
 };
+
+#endif

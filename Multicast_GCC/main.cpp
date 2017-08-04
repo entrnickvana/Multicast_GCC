@@ -2,14 +2,26 @@
 #include<iostream>
 #include<string>
 #include "Vertex.h"
-#include "Edge.h"
-#include "Graph.h"
+//#include "Edge.h"
+//#include "Graph.h"
+
+
+/*
+	Left to do
+	1. Simulation class
+	2. Random distribution of packets
+	3. 
+	4. Coloring Algorithm
+
+
+*/
+
 
 using namespace std;
 
 int main()
 {
-
+/*
 	Graph G;
 	
 	Vertex VA1, VA2, VA3, VA4;
@@ -21,21 +33,17 @@ int main()
 	VA3.color = 3;	VA3.name = "VA3";
 	VA4.color = 4;  VA4.name = "VA4";
 
-	G.addVertex(VA1);
-	G.addVertex(VA2);
+	G.addVertex(&VA1);
+	G.addVertex(&VA2);
 	
-	Edge* E1 = new Edge(VA1, VA2);
+	Edge E1(&VA1, &VA2);
 
-	G.addEdge(*E1);
+	G.addEdge(&E1);
 
 	G.plot("GraphColoring1");
 
-	delete E1;
+*/
 
 	getchar();
-
-	
-
-	return 0;
 
 }

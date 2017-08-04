@@ -1,7 +1,9 @@
-#pragma once
+
+#ifndef USER_H
+#define USER_H
 
 #include<set>
-#include<map>
+#include<unordered_map>
 #include<iterator>
 #include<string>
 #include "Packet.h"
@@ -13,19 +15,21 @@ class User
 public:
 
 	User();
+	User(long cacheSize_, set<Packet>* cachedPackets_);
 	~User();
 
-	User(long _cacheSize, set<Packet> _cachedPackets);
+	
 
 	
 	long cacheSize;
 	long remainingCapacity;
-	map<string, Packet> cachedPackets;
+	unordered_map<string, Packet> cachedPackets;
 
 
-	void cachePackets(set<Packet> packetsToCache);
+	void cachePackets(set<Packet>* packetsToCache);
 	void addPacket(Packet p);
-	void removePacket(Packet p);
+	void removePacket(Packet* p);
 
 };
 
+#endif

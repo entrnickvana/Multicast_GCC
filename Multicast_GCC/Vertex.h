@@ -1,4 +1,7 @@
-#pragma once
+
+#ifndef VERTEX_H
+#define VERTEX_H
+
 
 #include<string>
 #include "Packet.h"
@@ -28,4 +31,8 @@ public:
 
 private:
 
+
+
 };
+
+#endif

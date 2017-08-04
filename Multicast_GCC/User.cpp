@@ -1,9 +1,10 @@
 #include "User.h"
 #include "Packet.h"
-#include "_File.h"
+//#include "catalogFile.h"
 #include<string>
 #include<iterator>
-
+#include<unordered_map>
+#include<utility>
 
 User::User()
 {
@@ -16,14 +17,27 @@ User::~User()
 {
 }
 
-User(long _cacheSize, set<Packet> _cachedPackets)
+User::User( long cacheSize_, set<Packet>* cachedPackets_)
 {
-    cacheSize = _cacheSize;
-    cachedPackets = _cachedPackets;
-    remainingCapacity = cacheSize - ( _cachedPackets.size()*(_cachedPackets.begin().sizeInBytes));
+    cacheSize = cacheSize_;
+    remainingCapacity = cacheSize - (cachedPackets_->size()*(cachedPackets_->begin()->sizeInBytes));
+
+
+    for(set<Packet>::iterator itr = cachedPackets_->begin(); itr != cachedPackets_->end(); ++itr)
+	addPacket(*itr);
+
+    /*  The more efficient traversal of a vector
+    for(vector<Edge>::iterator itr = Edges.begin(); itr != Edges.end(); ++itr)
+    {
+        graphFile << "\"" + ((Edge)itr)->toString() + "\"";
+
+    }
+*/
+
+
 }
 
-void User::cachePackets(map<string, Packet> packetsToCache)
+void User::cachePackets(set<Packet>* packetsToCache)
 {
 
 
@@ -32,12 +46,13 @@ void User::cachePackets(map<string, Packet> packetsToCache)
 
 void User::addPacket(Packet p)
 {
-    if(remainingCapcity >= p.sizeInBytes)
-    cachedPackets.insert(p);
+    if(remainingCapacity >= p.sizeInBytes)
+    cachedPackets.insert(make_pair(p.packetName, p));
+	remainingCapacity = remainingCapacity - p.sizeInBytes;
 
 }
 
-void User::removePacket(Packet p)
+void User::removePacket(Packet* p)
 {
 
 
