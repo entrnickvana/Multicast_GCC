@@ -116,6 +116,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Media.cpp" />
     <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
@@ -124,6 +125,7 @@
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Media.h" />
     <ClInclude Include="Packet.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>

@@ -2,8 +2,6 @@
 
 #include<vector>
 
-
-
 using namespace std;
 
 class Packet;
@@ -15,10 +13,12 @@ class Media
 
     Media();
     Media(string mediaNameArg);
+    Media(string mediaNameArg, unsigned int numberOfPackets);
     string mediaName;
     vector<Packet> packetsOfMedia;
 
     void packetize(unsigned int numberOfPackets);
+    void addPacket(Packet packetToAdd);
     
     private:
     

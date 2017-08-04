@@ -13,12 +13,26 @@ Media::Media(string mediaNameArg)
 
 }
 
+Media::Media(string mediaNameArg, unsigned int numberOfPackets)
+{
+
+    this->mediaName = mediaNameArg;
+
+}
+
+
 void Media::packetize(unsigned int numberOfPackets)
 {
-    unsigned int i = 1;
-	for(vector<Packet>::iterator itr = packetsOfMedia.begin(); itr != packetsOfMedia.end(); ++itr)
+    
+	for(unsigned int i = 0; i < numberOfPackets; ++i)
     {
 		Packet nuPacket(this, i++);
+        this->addPacket(nuPacket);
     }
 
+}
+
+void Media::addPacket(Packet packetToAdd)
+{
+    this->packetsOfMedia.push_back(packetToAdd);
 }

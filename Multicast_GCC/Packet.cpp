@@ -3,7 +3,7 @@
 #include<string>
 #include<vector>
 #include "Media.h"
-//#include "catalogFile.h"
+
 
 
 using namespace std;
@@ -16,8 +16,10 @@ Packet::Packet()
 
 Packet::Packet(Media* parentMediaArg, unsigned int packetPartitionNumber)
 {
-   parentMedia = parentMediaArg;
-
+   this->parentMedia = parentMediaArg;
+   string temp(to_string(packetPartitionNumber));
+   this->packetName = "" + parentMediaArg->mediaName + temp;
+   
 }
 
 string Packet::toString()
