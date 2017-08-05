@@ -12,7 +12,7 @@ Simulation::Simulation()
 
 }
 
-Simulation::Simulation(unordered_set<Media>* mediaArg, unordered_set<User>* usersArg, string graphNameArg)
+Simulation::Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg)
 {
     this->mediaPTR = mediaArg;
     this->usersPTR = usersArg;
@@ -35,14 +35,11 @@ void Simulation::printSimulation()
 
 void Simulation::distributeMedia()
 {
-
     
-
-    /*for(unordered_set<Media>::iterator media_itr = mediaPTR->begin(); media_itr !=mediaPTR->end(); ++media_itr)
+    for(set<Media>::iterator media_itr = mediaPTR->begin(); media_itr !=mediaPTR->end(); ++media_itr)
     {
 		this->setOfAllPackets->insert(media_itr->packetsOfMedia.begin(),media_itr->packetsOfMedia.end());
-    }*/
-
+    }
 }
 
 Simulation::~Simulation()

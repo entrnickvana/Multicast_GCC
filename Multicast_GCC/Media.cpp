@@ -17,6 +17,7 @@ Media::Media(string mediaNameArg, unsigned int numberOfPackets)
 {
 
     this->mediaName = mediaNameArg;
+    this->packetize(numberOfPackets);
 
 }
 
@@ -24,9 +25,9 @@ Media::Media(string mediaNameArg, unsigned int numberOfPackets)
 void Media::packetize(unsigned int numberOfPackets)
 {
     
-	for(unsigned int i = 0; i < numberOfPackets; ++i)
+	for(unsigned int i = 0; i < numberOfPackets; i++)
     {
-		Packet nuPacket(this, i++);
+		Packet nuPacket(this, i);
         this->addPacket(nuPacket);
     }
 

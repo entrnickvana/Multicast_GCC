@@ -18,6 +18,7 @@ public:
 
 	Packet();
 	Packet(Media* parentMediaArg, unsigned int packetPartitionNumber);
+    bool operator<(const Packet& l) const;
 	~Packet();
 
 	long sizeInBits;
