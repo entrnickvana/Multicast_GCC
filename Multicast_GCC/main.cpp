@@ -5,7 +5,6 @@
 #include "Edge.h"
 #include "Graph.h"
 #include "Media.h"
-#include<iostream>
 #include<set>
 
 
@@ -25,19 +24,23 @@ using namespace std;
 int main()
 {
 
-	Media B("B", 3);
+	Media B("B", 100);
 	cout << B.packetsOfMedia.size() << endl;
 
-	Media A("A", 3);
+	Media A("A", 20);
 	cout << A.packetsOfMedia.size() << endl;
 
 	set<Packet> basicSet;
 
-	for (unsigned int i = 0; i < A.packetsOfMedia.size(); i++)
+	basicSet.insert(A.packetsOfMedia.begin(), A.packetsOfMedia.end());
+	basicSet.insert(B.packetsOfMedia.begin(), B.packetsOfMedia.end());
+
+
+	/*for (unsigned int i = 0; i < A.packetsOfMedia.size(); i++)
 	{
-		basicSet.insert(B.packetsOfMedia.at(i));
+		basicSet.insert((B.packetsOfMedia.at(i)));
 		basicSet.insert(A.packetsOfMedia.at(i));
-	}
+	}*/
 
 	cout << basicSet.size() << endl;
 

@@ -36,10 +36,7 @@ void Simulation::printSimulation()
 void Simulation::distributeMedia()
 {
     
-    for(set<Media>::iterator media_itr = mediaPTR->begin(); media_itr !=mediaPTR->end(); ++media_itr)
-    {
-		this->setOfAllPackets->insert(media_itr->packetsOfMedia.begin(),media_itr->packetsOfMedia.end());
-    }
+    
 }
 
 Simulation::~Simulation()

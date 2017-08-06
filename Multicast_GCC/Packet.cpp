@@ -22,27 +22,11 @@ Packet::Packet(Media* parentMediaArg, unsigned int packetPartitionNumber)
    
 }
 
-bool Packet::operator<(const Packet& l) const
+bool Packet::operator<(const Packet & rhs) const
 {
-	if((int)l.packetName.at(0) < (int)this->packetName.at(0))
-    {
-        return false;
-    }else
-    {
-        return true;
-    }
-
-    if( l.packetName.at(1) < this->packetName.at(1) )
-    {
-        return false;
-    }else
-    {
-		return true;
-    }
-
-    return false;
-	
+	return this->packetName.compare(rhs.packetName) < 0;
 }
+
 
 string Packet::toString()
 {
