@@ -18,17 +18,29 @@ class Simulation
 
         Simulation();
         Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg);
+        Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg, int packetsPerMedia);
         ~Simulation();
 
-        set<Media>* mediaPTR;
-        set<User>* usersPTR;
+        mutable set<Media>* mediaPTR;
+        mutable set<User>* usersPTR;
         string graphName;
         shared_ptr<Graph> G;
-        set<Packet>* setOfAllPackets;
+        mutable vector<Packet> setOfAllPackets;
+        vector<Packet> randomizedPackets;
+		unsigned int packetsPerUser;
         
 
         void stepForward();
         void printSimulation();
+		void printUsers();
+		void printFiles();
+		void randomizePackets();
+        void randomizePackets(int numberOfPackets);
+		void request();
+
+        template<typename T>
+        void randomizeWithFunctor(T functor);
+		
 		void distributeMedia();
         
 
@@ -38,3 +50,8 @@ class Simulation
 
 
 };
+
+//template<typename T>
+//inline void Simulation::randomizeWithFunctor(T functor)
+//{
+//}

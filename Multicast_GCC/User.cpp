@@ -12,15 +12,23 @@ User::User()
     remainingCapacity = 0;
 }
 
+User::User(long cacheSize_, string name_)
+{
+	cacheSize = cacheSize_;
+	name = name_;
+
+}
+
 
 User::~User()
 {
 }
 
-User::User( long cacheSize_, set<Packet>* cachedPackets_)
+User::User(long cacheSize_, set<Packet>* cachedPackets_, string name_)
 {
     cacheSize = cacheSize_;
     remainingCapacity = cacheSize - (cachedPackets_->size()*(cachedPackets_->begin()->sizeInBytes));
+	name = name_;
 
 
     for(set<Packet>::iterator itr = cachedPackets_->begin(); itr != cachedPackets_->end(); ++itr)
@@ -37,7 +45,7 @@ User::User( long cacheSize_, set<Packet>* cachedPackets_)
 
 }
 
-void User::cachePackets(set<Packet>* packetsToCache)
+void User::cachePackets(vector<Packet>::iterator beginIt, vector<Packet>::iterator endIt)
 {
 
 
@@ -46,7 +54,7 @@ void User::cachePackets(set<Packet>* packetsToCache)
 
 void User::addPacket(Packet p)
 {
-    if(remainingCapacity >= p.sizeInBytes)
+    
     cachedPackets.insert(make_pair(p.packetName, p));
 	remainingCapacity = remainingCapacity - p.sizeInBytes;
 

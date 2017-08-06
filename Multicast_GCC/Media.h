@@ -19,6 +19,7 @@ class Media
 
     void packetize(unsigned int numberOfPackets);
     void addPacket(Packet packetToAdd);
+    bool operator<(const Media& rhs) const;
     
     private:
     

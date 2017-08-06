@@ -21,7 +21,6 @@ Media::Media(string mediaNameArg, unsigned int numberOfPackets)
 
 }
 
-
 void Media::packetize(unsigned int numberOfPackets)
 {
     
@@ -31,6 +30,11 @@ void Media::packetize(unsigned int numberOfPackets)
         this->addPacket(nuPacket);
     }
 
+}
+
+bool Media::operator<(const Media& rhs) const
+{
+	return this->mediaName.compare(rhs.mediaName) < 0;
 }
 
 void Media::addPacket(Packet packetToAdd)

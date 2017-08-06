@@ -6,7 +6,11 @@
 #include "Graph.h"
 #include "Media.h"
 #include<set>
-
+#include<algorithm>
+#include<random>
+#include<unordered_set>
+#include<vector>
+#include "Simulation.h"
 
 /*
 	Left to do
@@ -24,42 +28,28 @@ using namespace std;
 int main()
 {
 
-	Media B("B", 100);
-	cout << B.packetsOfMedia.size() << endl;
+	set<Media> fileSet;
+	set<User> userSet;
+	
 
-	Media A("A", 20);
-	cout << A.packetsOfMedia.size() << endl;
-
-	set<Packet> basicSet;
-
-	basicSet.insert(A.packetsOfMedia.begin(), A.packetsOfMedia.end());
-	basicSet.insert(B.packetsOfMedia.begin(), B.packetsOfMedia.end());
-
-
-	/*for (unsigned int i = 0; i < A.packetsOfMedia.size(); i++)
+	for (int i = 65; i < 70; i++)
 	{
-		basicSet.insert((B.packetsOfMedia.at(i)));
-		basicSet.insert(A.packetsOfMedia.at(i));
-	}*/
+		string temp(1,(char)i);
+		
+		Media f1(temp);
+		fileSet.insert(f1);
+		
+		/*string s1
 
-	cout << basicSet.size() << endl;
+		User u1(12, );		
+		User u2(12, );
+		userSet.insert()
 
+		cout << temp << endl;*/
 
-	for(set<Packet>::iterator itr = basicSet.begin(); itr != basicSet.end(); ++itr)
-	{
-		cout << itr->packetName << endl;
 	}
 
-	
-	//Media C("C", 12);
-
-	//
-	//
-	//Graph G();
-
-
-
-
+	Simulation sim1();
 
 	getchar();
 
