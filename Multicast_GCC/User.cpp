@@ -45,6 +45,11 @@ User::User(long cacheSize_, set<Packet>* cachedPackets_, string name_)
 
 }
 
+bool User::operator<(const User& rhs) const
+{
+    return this->name.compare(rhs.name) < 0;
+}
+
 void User::cachePackets(vector<Packet>::iterator beginIt, vector<Packet>::iterator endIt)
 {
 

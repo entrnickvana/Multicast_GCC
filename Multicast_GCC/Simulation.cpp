@@ -125,6 +125,51 @@ void Simulation::request()
 
 }
 
+set<User> Simulation::generateUsers(unsigned int numberOfUsers_, unsigned int cacheSize_)
+{
+	set<User> tempUserSet;
+	for (unsigned int i = 0; i < numberOfUsers_; i++)\
+	{
+		User temp(cacheSize_, to_string(i));
+		tempUserSet.insert(temp);
+	}
+	
+
+	return tempUserSet;
+
+}
+
+set<Media> Simulation::generateFiles(unsigned int numberOfFiles_)
+{
+
+	vector<string> temp({ "A","B", "C", "D", "E", "F", "G", "H", "I","J", "K", "L", "M",
+		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+	});
+
+	this->nameBuilder.insert(nameBuilder.end(), temp.begin(), temp.end());
+
+	set<Media> tempMediaSet;
+
+
+	for (unsigned int i = 0; i < numberOfFiles_; i++)
+	{
+		Media mTemp(temp.at(i % 26));
+		tempMediaSet.insert(mTemp);
+	}
+
+	return tempMediaSet;
+	
+
+}
+
+set<Media> Simulation::generateFiles(string fileNameDirectory)
+{
+	set<Media> m;
+	return m;
+}
+
+
+
 void Simulation::distributeMedia()
 {
     unsigned int totalNumberOfPackets = setOfAllPackets.size();

@@ -31,6 +31,7 @@ public:
 	void cachePackets(vector<Packet>::iterator beginIt,  vector<Packet>::iterator endIt);
 	void addPacket(Packet p);
 	void removePacket(Packet* p);
+	bool operator<(const User& rhs) const;
 
 };
 

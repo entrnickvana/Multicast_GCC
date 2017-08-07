@@ -8,6 +8,7 @@
 #include<memory>
 #include<unordered_set>
 #include"Packet.h"
+#include<fstream>
 
 using namespace std;
 
@@ -28,6 +29,9 @@ class Simulation
         mutable vector<Packet> setOfAllPackets;
         vector<Packet> randomizedPackets;
 		unsigned int packetsPerUser;
+		vector<string> nameBuilder;
+		
+
         
 
         void stepForward();
@@ -37,6 +41,9 @@ class Simulation
 		void randomizePackets();
         void randomizePackets(int numberOfPackets);
 		void request();
+		set<User> generateUsers(unsigned int numberOfUsers_, unsigned int cachSize_);
+		set<Media> generateFiles(unsigned int numberOfFiles_);
+		set<Media> generateFiles(string fileNameDirectory);
 
         template<typename T>
         void randomizeWithFunctor(T functor);
