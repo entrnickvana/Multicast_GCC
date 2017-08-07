@@ -17,26 +17,32 @@ Simulation::Simulation()
 
 }
 
+Simulation::Simulation(string graphNameArg)
+{
+	graphName = graphNameArg;
+
+}
+
 Simulation::Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg)
 {
-    this->mediaPTR = mediaArg;
-    this->usersPTR = usersArg;
+	this->mediaPTR.insert(mediaArg->begin(), mediaArg->end());
+	this->usersPTR.insert(usersArg->begin(), usersArg->end());
     this->graphName = "" + graphNameArg;
-	this->G = make_shared<Graph>();
+	
 
 }
 
 Simulation::Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg, int packetsPerMedia)
 {
-    this->mediaPTR = mediaArg;
-    this->usersPTR = usersArg;
+	this->mediaPTR.insert(mediaArg->begin(), mediaArg->end());
+	this->usersPTR.insert(usersArg->begin(), usersArg->end());
     this->graphName = "" + graphNameArg;
-	this->G = make_shared<Graph>();
+	
 
-    if(mediaPTR->begin()->packetsOfMedia.size() == 0)
-    {
+    //if(mediaPTR->begin()->packetsOfMedia.size() == 0)
+    //{
 
-    }
+    //}
 
 }
 
@@ -50,30 +56,33 @@ void Simulation::printSimulation()
 {
 	printUsers();
 	printFiles();
-	this->G->plot("666");
+	this->graph.plot("666");
 	
 }
 
 void Simulation::printUsers()
 {
-	for (set<User>::iterator user_itr = usersPTR->begin(); user_itr != usersPTR->end(); ++user_itr)
+	for (set<User>::iterator user_itr = usersPTR.begin(); user_itr != usersPTR.end(); ++user_itr)
 	{
 		cout << user_itr->name << endl << "******************" << endl;
 
-		for (auto packet_itr = user_itr->cachedPackets.begin();
-			packet_itr != user_itr->cachedPackets.end(); ++user_itr)
+		auto packet_itr = user_itr->cachedPackets.begin();
+
+		for (; packet_itr != user_itr->cachedPackets.end(); ++packet_itr)
 		{
-			cout << packet_itr->first << "  ";
+			cout << packet_itr->first << "   ";
 		}
 
 		cout << endl;
 	}
 
+	cout << endl;
+
 }
 
 void Simulation::printFiles()
 {
-	for (auto files_itr = mediaPTR->begin(); files_itr != mediaPTR->end(); ++files_itr)
+	for (auto files_itr = mediaPTR.begin(); files_itr != mediaPTR.end(); ++files_itr)
 	{
 		cout << files_itr->mediaName << endl << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
@@ -96,7 +105,7 @@ void Simulation::randomizePackets()
     //Combine All Packets
 
         //For every Media
-        for(set<Media>::iterator itr = mediaPTR->cbegin(); itr != mediaPTR->cend(); ++itr)
+        for(set<Media>::iterator itr = mediaPTR.cbegin(); itr != mediaPTR.cend(); ++itr)
         {
 			setOfAllPackets.insert(setOfAllPackets.end(), itr->packetsOfMedia.begin(), itr->packetsOfMedia.end());
         }
@@ -130,7 +139,7 @@ set<User> Simulation::generateUsers(unsigned int numberOfUsers_, unsigned int ca
 	set<User> tempUserSet;
 	for (unsigned int i = 0; i < numberOfUsers_; i++)\
 	{
-		User temp(cacheSize_, to_string(i));
+		User temp(cacheSize_, "U" + to_string(i + 1));
 		tempUserSet.insert(temp);
 	}
 	
@@ -139,7 +148,7 @@ set<User> Simulation::generateUsers(unsigned int numberOfUsers_, unsigned int ca
 
 }
 
-set<Media> Simulation::generateFiles(unsigned int numberOfFiles_)
+set<Media> Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_)
 {
 
 	vector<string> temp({ "A","B", "C", "D", "E", "F", "G", "H", "I","J", "K", "L", "M",
@@ -153,7 +162,8 @@ set<Media> Simulation::generateFiles(unsigned int numberOfFiles_)
 
 	for (unsigned int i = 0; i < numberOfFiles_; i++)
 	{
-		Media mTemp(temp.at(i % 26));
+		Media mTemp(temp.at(i % 26), mediaSizeInBytes_);
+		mTemp.packetize(numberOfPackets);
 		tempMediaSet.insert(mTemp);
 	}
 
@@ -173,24 +183,33 @@ set<Media> Simulation::generateFiles(string fileNameDirectory)
 void Simulation::distributeMedia()
 {
     unsigned int totalNumberOfPackets = setOfAllPackets.size();
-    unsigned int collectiveUserCapacity = usersPTR->size() * usersPTR->begin()->cacheSize;
+    unsigned int collectiveUserCapacity = usersPTR.size() * usersPTR.begin()->cacheSize;
     unsigned int numOfUncachedPackets = totalNumberOfPackets - collectiveUserCapacity;
-	this->packetsPerUser = usersPTR->begin()->cacheSize / setOfAllPackets.begin()->sizeInBytes;
+	this->packetsPerUser = usersPTR.begin()->cacheSize / setOfAllPackets.begin()->sizeInBytes;
 
 	unsigned int userSubsetCounter = 0;
 	unsigned int moddedCounter = 0;
 
-	vector<User> temp(usersPTR->begin(), usersPTR->end());
+	
+	int counter = 0;
+	
+	set<User> nuUserSet;
 
-	for(vector<User>::iterator user_itr = temp.begin(); user_itr != temp.end(); ++user_itr)
+	for(auto user_itr = usersPTR.begin(); user_itr != usersPTR.end(); ++user_itr)
 	{
-		for(unsigned int k = 0; k < packetsPerUser; k++)
-		{
-			user_itr->addPacket(randomizedPackets.at(userSubsetCounter++));
+		User modifiedUser(*user_itr);
 
+		for (unsigned int i = 0; i < packetsPerUser; i++)
+		{
+			modifiedUser.addPacket(this->randomizedPackets.at(counter++));
 		}
 
+		nuUserSet.insert(modifiedUser);
+		
 	}
+
+	this->usersPTR.clear();
+	usersPTR.insert(nuUserSet.begin(), nuUserSet.end());
     
 }
 

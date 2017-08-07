@@ -17,7 +17,7 @@ class Packet
 public:
 
 	Packet();
-	Packet(Media* parentMediaArg, unsigned int packetPartitionNumber);
+	Packet(Media* parentMediaArg, unsigned int packetPartitionNumber, unsigned int sizeInBytes_);
     bool operator<(const Packet& rhs) const;
 	
 	~Packet();

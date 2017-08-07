@@ -14,8 +14,9 @@ Packet::Packet()
 
 }
 
-Packet::Packet(Media* parentMediaArg, unsigned int packetPartitionNumber)
+Packet::Packet(Media* parentMediaArg, unsigned int packetPartitionNumber, unsigned int sizeInBytes_)
 {
+   this->sizeInBytes = sizeInBytes_;
    this->parentMedia = parentMediaArg;
    string temp(to_string(packetPartitionNumber));
    this->packetName = "" + parentMediaArg->mediaName + temp;

@@ -16,6 +16,7 @@ class Graph
 
     vector<Vertex> Vertices;
     vector<Edge> Edges;
+	string name;
 
 	bool addVertex(Vertex* v);
 	bool addEdge(Edge* e);
