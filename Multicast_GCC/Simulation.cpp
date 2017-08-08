@@ -11,6 +11,7 @@
 #include<random>
 #include "Packet.h"
 #include<iostream>
+#include<random>
 
 Simulation::Simulation()
 {
@@ -211,6 +212,74 @@ void Simulation::distributeMedia()
 	this->usersPTR.clear();
 	usersPTR.insert(nuUserSet.begin(), nuUserSet.end());
     
+}
+
+set<pair<Media, User>> Simulation::request(unsigned int numOfRequests)
+{
+
+	set<pair<Media, User>> pairsToRequest;
+
+	int tempIndex1;
+	int tempIndex2;
+
+	for (unsigned int i = 0; i < numOfRequests; i++)
+	{
+		tempIndex1 = rand() % usersPTR.size() + 1;
+		tempIndex2 = rand() % mediaPTR.size() + 1;
+		set<User>::iterator uItr = usersPTR.begin();
+		set<Media>::iterator mItr = mediaPTR.begin();
+
+		advance(uItr, tempIndex1);
+		advance(mItr, tempIndex2);
+
+		pair<Media, User> pTemp(*mItr, *uItr);
+		pairsToRequest.insert(pTemp);
+
+	}
+	
+	this->requestHistory.insert(requestHistory.end(),pairsToRequest.begin(), pairsToRequest.end());
+
+	return pairsToRequest;
+}
+
+set<pair<Vertex, Edge>> Simulation::mapRequestsToEdges(set<pair<Media, User>> requestsToMap)
+{
+	set<Packet> neededPackets;
+	set<pair<Vertex, Edge>> pairsToAddToGraph;
+
+	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end();  ++reqItr)
+	{
+		set<Packet> unneededPackets;
+
+		User tmpUsr(reqItr->second);
+		
+		for (auto pcktItr = tmpUsr.cachedPackets.begin(); pcktItr != tmpUsr.cachedPackets.end(); ++pcktItr)
+		{
+			Packet pTemp(pcktItr->second);
+
+			for (auto otherPacketItr = tmpUsr.cachedPackets.begin(); otherPacketItr != tmpUsr.cachedPackets.end(); ++otherPacketItr)
+			{
+
+				if ((pTemp.parentMedia == &reqItr->first) && (pTemp.partitionNumber != otherPacketItr->second.partitionNumber))
+				{
+					unneededPackets.insert(otherPacketItr->second);
+				}
+
+			}
+
+		}
+
+		auto inItr3 = unneededPackets.begin()->parentMedia->setOfPackets.begin();
+		auto inItr4 = unneededPackets.begin()->parentMedia->setOfPackets.end();
+
+		set_difference(unneededPackets.begin(), unneededPackets.end(), inItr3, inItr4, neededPackets.begin());
+
+		
+
+	}
+
+	set<pair<Vertex, Edge>> dummy;
+	return dummy;
 }
 
 template<typename T>

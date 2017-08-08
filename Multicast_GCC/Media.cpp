@@ -32,6 +32,8 @@ void Media::packetize(unsigned int numberOfPackets)
         this->addPacket(nuPacket);
     }
 
+	this->setOfPackets.insert(packetsOfMedia.begin(), packetsOfMedia.end());
+
 }
 
 bool Media::operator<(const Media& rhs) const

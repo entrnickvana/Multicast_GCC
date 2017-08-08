@@ -31,6 +31,7 @@ class Simulation
         vector<Packet> randomizedPackets;
 		unsigned int packetsPerUser;
 		vector<string> nameBuilder;
+		vector<pair<Media, User>> requestHistory;
 		
 
         
@@ -51,6 +52,10 @@ class Simulation
         void randomizeWithFunctor(T functor);
 		
 		void distributeMedia();
+
+		set<pair<Media, User>> request(unsigned int numOfRequests);
+
+		set<pair<Vertex, Edge>> mapRequestsToEdges(set<pair<Media, User>> requestsToMap);
         
 
 

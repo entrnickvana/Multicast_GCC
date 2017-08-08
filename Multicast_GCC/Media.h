@@ -1,6 +1,7 @@
 #pragma once
 
 #include<vector>
+#include<set>
 
 using namespace std;
 
@@ -16,6 +17,7 @@ class Media
     Media(string mediaNameArg, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_);
     string mediaName;
     vector<Packet> packetsOfMedia;
+	set<Packet> setOfPackets;
 	unsigned int mediaSizeInBytes;
 
     void packetize(unsigned int numberOfPackets);
