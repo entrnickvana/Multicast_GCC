@@ -272,9 +272,11 @@ set<pair<Vertex, Edge>> Simulation::mapRequestsToEdges(set<pair<Media, User>> re
 		auto inItr3 = unneededPackets.begin()->parentMedia->setOfPackets.begin();
 		auto inItr4 = unneededPackets.begin()->parentMedia->setOfPackets.end();
 
-		set_difference(unneededPackets.begin(), unneededPackets.end(), inItr3, inItr4, neededPackets.begin());
+		//set_difference(unneededPackets.begin(), unneededPackets.end(), inItr3, inItr4, neededPackets.begin());
 
-		
+		// Vertex = (PACKET IDENTITY OF VERTEX, USER REQUETING PACKET) 
+		//        = (GET_PACKET_IDENTITY, GET_REQUESTING_USER)
+		//		  = (p(v), u(v)) where p(v) computes packet from vertex v element of V, u(v) computes user v element V
 
 	}
 
