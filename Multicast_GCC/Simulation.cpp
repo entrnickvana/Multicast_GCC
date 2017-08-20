@@ -15,7 +15,7 @@
 
 Simulation::Simulation()
 {
-
+	
 }
 
 Simulation::Simulation(string graphNameArg)
@@ -74,7 +74,7 @@ void Simulation::printUsers()
 			cout << packet_itr->first << "   ";
 		}
 
-		cout << endl;
+		cout << endl << endl;
 	}
 
 	cout << endl;
@@ -92,7 +92,7 @@ void Simulation::printFiles()
 			cout << packet_itr->packetName << "   ";
 		}
 
-		cout << endl;
+		cout << endl << endl;
 
 	}
 
@@ -106,14 +106,12 @@ void Simulation::randomizePackets()
     //Combine All Packets
 
         //For every Media
-        for(set<Media>::iterator itr = mediaPTR.cbegin(); itr != mediaPTR.cend(); ++itr)
+        for(set<Media>::iterator itr = mediaPTR.begin(); itr != mediaPTR.end(); ++itr)
         {
 			setOfAllPackets.insert(setOfAllPackets.end(), itr->packetsOfMedia.begin(), itr->packetsOfMedia.end());
         }
 
-		sort(setOfAllPackets.begin(), setOfAllPackets.end());
-
-		vector<Packet> nuRandomizedSetOfPackets(setOfAllPackets);
+		vector<Packet> nuRandomizedSetOfPackets(setOfAllPackets.begin(), setOfAllPackets.end());
 
 		random_shuffle(nuRandomizedSetOfPackets.begin(), nuRandomizedSetOfPackets.end());
 
@@ -135,21 +133,18 @@ void Simulation::request()
 
 }
 
-set<User> Simulation::generateUsers(unsigned int numberOfUsers_, unsigned int cacheSize_)
+void Simulation::generateUsers(unsigned int numberOfUsers_, unsigned int cacheSize_)
 {
 	set<User> tempUserSet;
 	for (unsigned int i = 0; i < numberOfUsers_; i++)\
 	{
 		User temp(cacheSize_, "U" + to_string(i + 1));
-		tempUserSet.insert(temp);
+		this->usersPTR.insert(temp);
 	}
-	
-
-	return tempUserSet;
 
 }
 
-set<Media> Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_)
+void Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_)
 {
 
 	vector<string> temp({ "A","B", "C", "D", "E", "F", "G", "H", "I","J", "K", "L", "M",
@@ -165,10 +160,8 @@ set<Media> Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int n
 	{
 		Media mTemp(temp.at(i % 26), mediaSizeInBytes_);
 		mTemp.packetize(numberOfPackets);
-		tempMediaSet.insert(mTemp);
+		this->mediaPTR.insert(mTemp);
 	}
-
-	return tempMediaSet;
 	
 
 }
@@ -242,45 +235,143 @@ set<pair<Media, User>> Simulation::request(unsigned int numOfRequests)
 	return pairsToRequest;
 }
 
-set<pair<Vertex, Edge>> Simulation::mapRequestsToEdges(set<pair<Media, User>> requestsToMap)
+set<Packet> Simulation::identifyNeededPackets(pair<Media, User> requestToIdentify)
 {
-	set<Packet> neededPackets;
-	set<pair<Vertex, Edge>> pairsToAddToGraph;
-
-	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end();  ++reqItr)
+	
+	set<Packet> usrPackets;
+	for (const auto& pair : requestToIdentify.second.cachedPackets)
 	{
-		set<Packet> unneededPackets;
+		usrPackets.insert(pair.second);
+	}
 
-		User tmpUsr(reqItr->second);
-		
-		for (auto pcktItr = tmpUsr.cachedPackets.begin(); pcktItr != tmpUsr.cachedPackets.end(); ++pcktItr)
+	set<Packet> filePackets(requestToIdentify.first.packetsOfMedia.begin(), requestToIdentify.first.packetsOfMedia.end());
+
+	vector<Packet> neededPackets;
+	vector<Packet>::iterator itr;
+
+	itr = set_difference(filePackets.begin(), filePackets.end(), usrPackets.begin(), usrPackets.end(), neededPackets.begin());
+
+	neededPackets.resize(itr - neededPackets.begin());
+
+	set<Packet> dummySet;
+
+	return dummySet;
+	/*set<Packet> localPackets;
+	set<Packet> requestedPackets;
+
+	Media tmpFile(requestToIdentify.first);
+
+	User tmpUsr(requestToIdentify.second);
+
+
+	for (auto pcktItr = tmpUsr.cachedPackets.begin(); pcktItr != tmpUsr.cachedPackets.end(); ++pcktItr)
+	{
+		Packet pTemp(pcktItr->second);
+
+		for (auto otherPacketItr = tmpUsr.cachedPackets.begin(); otherPacketItr != tmpUsr.cachedPackets.end(); ++otherPacketItr)
 		{
-			Packet pTemp(pcktItr->second);
-
-			for (auto otherPacketItr = tmpUsr.cachedPackets.begin(); otherPacketItr != tmpUsr.cachedPackets.end(); ++otherPacketItr)
+			if ((*pTemp.parentMedia == tmpFile) && (pTemp.partitionNumber != otherPacketItr->second.partitionNumber))
 			{
-
-				if ((pTemp.parentMedia == &reqItr->first) && (pTemp.partitionNumber != otherPacketItr->second.partitionNumber))
-				{
-					unneededPackets.insert(otherPacketItr->second);
-				}
-
+				localPackets.insert(otherPacketItr->second);
 			}
 
 		}
 
-		auto inItr3 = unneededPackets.begin()->parentMedia->setOfPackets.begin();
-		auto inItr4 = unneededPackets.begin()->parentMedia->setOfPackets.end();
+	}
 
-		//set_difference(unneededPackets.begin(), unneededPackets.end(), inItr3, inItr4, neededPackets.begin());
+	auto inItr3 = localPackets.begin()->parentMedia->setOfPackets.begin();
+	auto inItr4 = localPackets.begin()->parentMedia->setOfPackets.end();
 
+	set_difference(localPackets.begin(), localPackets.end(), inItr3, inItr4, requestedPackets.begin());
+
+	return requestedPackets;*/
+
+}
+
+set<Vertex> Simulation::createVertices(set<Packet>* identityPackets, User* requestingUser)
+{
+	set<Vertex> nuVertices;
+	Packet tempPckt;
+
+	for (set<Packet>::iterator packetItr = identityPackets->begin(); packetItr != identityPackets->end(); ++packetItr)
+	{
+		tempPckt = *packetItr;
+		nuVertices.insert(createVertex(&tempPckt, requestingUser));
+	}
+	
+	return nuVertices;
+}
+
+
+Vertex Simulation::createVertex(Packet* identityPacket, User* requestingUser)
+{
+
+	Vertex v(identityPacket, requestingUser, this->graph.numberOfVertices);
+
+	
+	return v;
+}
+
+
+set<Vertex> Simulation::mapRequestsToVertices(set<pair<Media, User>> requestsToMap)
+{
+	//set<Packet> neededPackets;
+	set<Vertex> verticesToAddToGraph;
+
+	//Iterate through each user
+	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end();  ++reqItr)
+	{
+		
+		const pair<Media, User> currentPair = *reqItr;
+
+		set<Packet> neededPackets(identifyNeededPackets(currentPair));
+
+		//Insert All Vertices
+
+
+		/*  ////////////////  Description of Graph Construction and Definition  /////////////////////////
+		
 		// Vertex = (PACKET IDENTITY OF VERTEX, USER REQUETING PACKET) 
 		//        = (GET_PACKET_IDENTITY, GET_REQUESTING_USER)
 		//		  = (p(v), u(v)) where p(v) computes packet from vertex v element of V, u(v) computes user v element V
 
+		// Steps for constructing graph
+
+		// Each vertex is an abstraction composed of the pair(Packet, User Requesting Packet)
+
+		// An edge is an abstraction composed of the pair (v_1, v_2) where v_1, v_2 are unique elements in V
+
+		   An edge is add to the Graph G which is compose of the (V,E)  if
+
+		   1. v_1 is not in the cache of the user associated to v_2 by u(v)
+
+		   2. v_1 and v_2 do not represent the same packet
+
+		   ///////////  Steps  ////////////////
+
+		   1. Requests are placed
+		   
+		   2. Given set of (File, User) pairs which are the raw materials for determinging actual packet requests
+
+		   3. Iterate through each given User
+
+		   //For
+
+		   		4. Access u_i local cached packets, to determin local subset of packets
+
+		   		5. Access full set of packets belonging to requested file through pointer
+
+				6. Subtract local from complete set
+
+				7. 
+
+		
+		
+		*/
+
 	}
 
-	set<pair<Vertex, Edge>> dummy;
+	set<Vertex> dummy;
 	return dummy;
 }
 

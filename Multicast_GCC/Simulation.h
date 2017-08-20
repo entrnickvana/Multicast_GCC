@@ -27,7 +27,7 @@ class Simulation
         mutable set<User> usersPTR;
         string graphName;
         Graph graph;
-        mutable vector<Packet> setOfAllPackets;
+        vector<Packet> setOfAllPackets;
         vector<Packet> randomizedPackets;
 		unsigned int packetsPerUser;
 		vector<string> nameBuilder;
@@ -44,8 +44,8 @@ class Simulation
         void randomizePackets(int numberOfPackets);
 		void request();
 
-		set<User> generateUsers(unsigned int numberOfUsers_, unsigned int cachSize_);
-		set<Media> generateFiles(unsigned int numberOfFiles_, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_);
+		void generateUsers(unsigned int numberOfUsers_, unsigned int cachSize_);
+		void generateFiles(unsigned int numberOfFiles_, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_);
 		set<Media> generateFiles(string fileNameDirectory);
 
         template<typename T>
@@ -55,7 +55,13 @@ class Simulation
 
 		set<pair<Media, User>> request(unsigned int numOfRequests);
 
-		set<pair<Vertex, Edge>> mapRequestsToEdges(set<pair<Media, User>> requestsToMap);
+		set<Packet> identifyNeededPackets(pair<Media, User> requestToIdentify);
+
+		set<Vertex> createVertices(set<Packet>* identityPackets, User* requestingUser);
+
+		Vertex createVertex(Packet* identityPacket, User* requestingUser);
+
+		set<Vertex> mapRequestsToVertices(set<pair<Media, User>> requestsToMap);
         
 
 

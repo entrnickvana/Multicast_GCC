@@ -10,7 +10,21 @@
 
 using namespace std;
 
-Graph::Graph(){}
+Graph::Graph()
+{
+	
+}
+
+
+Graph::Graph(set<Media>* files_, set<User>* users_)
+{
+	this->files = files_;
+	this->users = users_;
+
+
+
+}
+
 Graph::~Graph(){}
 
 bool Graph::addEdge(Edge* e)
@@ -90,6 +104,29 @@ void Graph::plot(string plotNumber)
     graphFile << "}";
     
     graphFile.close();
+
+}
+
+User* Graph::getAssociatedUser(Vertex v)
+{
+	return  v.requestingUser;
+}
+
+Packet* Graph::getAssociatedPacket(Vertex v)
+{
+	return v.requestedPacket;
+}
+
+bool Graph::packetsAreEquivalent(Vertex lhs, Vertex rhs)
+{
+	// Compare the string name given to the identifying packet of each vertex
+	bool cond1 = lhs.requestedPacket->packetName.compare(rhs.requestedPacket->packetName) < 0;
+
+	// Compare the string name given to the user requesting the identifying packet
+	bool cond2 = lhs.requestingUser->name.compare(rhs.requestingUser->name) < 0;
+
+	return cond1 && cond2;
+
 
 }
 

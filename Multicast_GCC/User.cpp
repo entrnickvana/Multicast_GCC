@@ -31,7 +31,7 @@ User::User(long cacheSize_, set<Packet>* cachedPackets_, string name_)
 	name = name_;
 
 
-    for(set<Packet>::iterator itr = cachedPackets_->begin(); itr != cachedPackets_->end(); ++itr)
+	for (set<Packet>::iterator itr = cachedPackets_->begin(); itr != cachedPackets_->end(); ++itr)
 	addPacket(*itr);
 
     /*  The more efficient traversal of a vector

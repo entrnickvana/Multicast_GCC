@@ -14,12 +14,14 @@ class Vertex
 public:
 
 	Vertex();
+	Vertex(Packet* p, User* u, const long Vertex);
 	~Vertex();
 
 	long color;
+	long vertexNumber;
 	string name;
-	Packet requestedPacket;
-	User requestingUser;
+	Packet* requestedPacket;
+	User* requestingUser;
 
 
 	long getColor();
@@ -27,6 +29,8 @@ public:
 	string getName();
 	void setName(string newName);
 	string toString();
+	bool operator<(const Vertex& lhs) const;
+	
 
 
 private:

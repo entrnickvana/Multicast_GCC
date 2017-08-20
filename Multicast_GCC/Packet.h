@@ -19,6 +19,13 @@ public:
 	Packet();
 	Packet(Media* parentMediaArg, unsigned int packetPartitionNumber, unsigned int sizeInBytes_);
     bool operator<(const Packet& rhs) const;
+	bool operator>(const Packet& rhs) const;
+	bool operator<=(const Packet& rhs) const;
+	bool operator>=(const Packet& rhs) const;
+	bool operator==(const Packet& rhs) const;
+	bool operator!=(const Packet& rhs) const;
+
+	//Packet& operator=(const Packet& rhs);
 	
 	~Packet();
 
