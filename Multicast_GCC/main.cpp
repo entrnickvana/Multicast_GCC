@@ -64,6 +64,7 @@ int main()
 	set<pair<shared_ptr<Media>, shared_ptr<User>>> p1(sim1.request(4));
 
 	sim1.mapRequestsToVertices(p1);
+	sim1.graph.plot("666");
 
 
 	Graph gig;

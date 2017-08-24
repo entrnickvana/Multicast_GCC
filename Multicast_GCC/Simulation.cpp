@@ -22,6 +22,8 @@ Simulation::Simulation()
 Simulation::Simulation(string graphNameArg)
 {
 	graphName = graphNameArg;
+	this->mediaPTR = new set<shared_ptr<Media>>();
+	this->usersPTR = new set<shared_ptr<User>>();
 
 }
 
@@ -153,6 +155,8 @@ void Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberO
 	});
 
 	this->nameBuilder.insert(nameBuilder.end(), temp.begin(), temp.end());
+
+
 
 
 	for (unsigned int i = 0; i < numberOfFiles_; i++)
