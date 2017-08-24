@@ -6,6 +6,7 @@
 #include<string>
 //#include "Media.h"
 //#include "catalogFile.h"
+#include<memory>
 
 
 using namespace std;
@@ -17,7 +18,7 @@ class Packet
 public:
 
 	Packet();
-	Packet(Media* parentMediaArg, unsigned int packetPartitionNumber, unsigned int sizeInBytes_);
+	Packet(shared_ptr<Media> parentMediaArg, unsigned int packetPartitionNumber, unsigned int sizeInBytes_);
     bool operator<(const Packet& rhs) const;
 	bool operator>(const Packet& rhs) const;
 	bool operator<=(const Packet& rhs) const;
@@ -34,7 +35,7 @@ public:
     vector<char> data;
     unsigned int partitionNumber;
     string packetName;
-    Media* parentMedia;
+    shared_ptr<Media> parentMedia;
 
 	string toString();
 

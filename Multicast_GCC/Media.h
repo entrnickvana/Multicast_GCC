@@ -2,12 +2,13 @@
 
 #include<vector>
 #include<set>
+#include<memory>
 
 using namespace std;
 
 class Packet;
 
-class Media
+class Media : public enable_shared_from_this<Media>
 {
 
     public:
@@ -23,7 +24,11 @@ class Media
     void packetize(unsigned int numberOfPackets);
     void addPacket(Packet packetToAdd);
     bool operator<(const Media& rhs) const;
+	bool operator>(const Media& rhs) const;
+	bool operator<=(const Media& rhs) const;
+	bool operator>=(const Media& rhs) const;
 	bool operator==(const Media& rhs) const;
+	bool operator!=(const Media& rhs) const;
     
     private:
     

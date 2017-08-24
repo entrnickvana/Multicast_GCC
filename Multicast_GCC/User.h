@@ -32,6 +32,11 @@ public:
 	void addPacket(Packet p);
 	void removePacket(Packet* p);
 	bool operator<(const User& rhs) const;
+	bool operator>(const User& rhs) const;
+	bool operator<=(const User& rhs) const;
+	bool operator>=(const User& rhs) const;
+	bool operator==(const User& rhs) const;
+	bool operator!=(const User& rhs) const;
 
 };
 

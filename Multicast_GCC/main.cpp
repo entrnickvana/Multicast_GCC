@@ -11,6 +11,8 @@
 #include<unordered_set>
 #include<vector>
 #include "Simulation.h"
+#include<memory>
+#include "mCMP.h"
 
 /*
 	Left to do
@@ -29,6 +31,27 @@ int main()
 {
 	
 
+	//Test Comparator
+
+
+	//shared_ptr<Media> A = make_shared<Media>("A", 128);
+	//shared_ptr<Media> B = make_shared<Media>("B", 128);
+	//shared_ptr<Media> C = make_shared<Media>("C", 128);
+	//shared_ptr<Media> D = make_shared<Media>("D", 128);
+
+	//set<shared_ptr<Media>, mCMP<Media>> mediaSet;
+
+	//mediaSet.insert(C);
+	//mediaSet.insert(A);
+	//mediaSet.insert(D);
+	//mediaSet.insert(B);
+
+	//for (auto const& entry : mediaSet)
+	//{
+	//	cout << entry->mediaName << endl;
+	//}
+
+
 	Simulation sim1("G_CODE");
 
 	sim1.generateFiles(3,16,256);
@@ -38,7 +61,7 @@ int main()
 	sim1.printFiles();
 	sim1.printUsers();
 
-	set<pair<Media, User>> p1(sim1.request(4));
+	set<pair<shared_ptr<Media>, shared_ptr<User>>> p1(sim1.request(4));
 
 	sim1.mapRequestsToVertices(p1);
 

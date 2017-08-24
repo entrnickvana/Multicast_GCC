@@ -28,8 +28,8 @@ class Graph
     bool removeEdge(Edge* e);
 	bool removeVertex(Vertex* v);
     void plot(string plotNumber);
-	User* getAssociatedUser(Vertex v);
-	Packet* getAssociatedPacket(Vertex v);
+	shared_ptr<User> getAssociatedUser(Vertex v);
+	shared_ptr<Packet> getAssociatedPacket(Vertex v);
 	bool packetsAreEquivalent(Vertex lhs, Vertex rhs);
 	long numberOfVertices;
 	long numberOfEdges;

@@ -132,12 +132,12 @@ void Graph::plot(string plotNumber)
 
 }
 
-User* Graph::getAssociatedUser(Vertex v)
+shared_ptr<User> Graph::getAssociatedUser(Vertex v)
 {
 	return  v.requestingUser;
 }
 
-Packet* Graph::getAssociatedPacket(Vertex v)
+shared_ptr<Packet> Graph::getAssociatedPacket(Vertex v)
 {
 	return v.requestedPacket;
 }

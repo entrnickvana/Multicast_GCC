@@ -19,19 +19,19 @@ class Simulation
 
         Simulation();
 		Simulation(string graphNameArg);
-        Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg);
-        Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg, int packetsPerMedia);
+        Simulation(set<shared_ptr<Media>>* mediaArg, set<shared_ptr<User>>* usersArg, string graphNameArg);
+        Simulation(set<shared_ptr<Media>>* mediaArg, set<shared_ptr<User>>* usersArg, string graphNameArg, int packetsPerMedia);
         ~Simulation();
 
-        mutable set<Media> mediaPTR;
-        mutable set<User> usersPTR;
+        set<shared_ptr<Media>>* mediaPTR;
+		set<shared_ptr<User>>* usersPTR;
         string graphName;
         Graph graph;
         vector<Packet> setOfAllPackets;
         vector<Packet> randomizedPackets;
 		unsigned int packetsPerUser;
 		vector<string> nameBuilder;
-		vector<pair<Media, User>> requestHistory;
+		vector<pair<shared_ptr<Media>, shared_ptr<User>>> requestHistory;
 		
 
         
@@ -53,17 +53,17 @@ class Simulation
 		
 		void distributeMedia();
 
-		set<pair<Media, User>> request(unsigned int numOfRequests);
+		set<pair<shared_ptr<Media>, shared_ptr<User>>> request(unsigned int numOfRequests);
 
-		set<Packet> identifyNeededPackets(pair<Media, User> requestToIdentify);
+		set<Packet> identifyNeededPackets(pair<shared_ptr<Media>, shared_ptr<User>> requestToIdentify);
 
-		set<Vertex> createVertices(set<Packet>* identityPackets, User* requestingUser);
+		set<Vertex> createVertices(set<Packet>* identityPackets, shared_ptr<User> requestingUser);
 
-		Vertex createVertex(Packet* identityPacket, User* requestingUser);
+		Vertex createVertex(shared_ptr<Packet> identityPacket, shared_ptr<User> requestingUser);
 
 		Edge createEdge(Vertex* a, Vertex* b);
 
-		void mapRequestsToVertices(set<pair<Media, User>> requestsToMap);
+		void mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<User>>> requestsToMap);
         
 
 

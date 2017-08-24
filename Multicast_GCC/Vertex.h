@@ -6,6 +6,7 @@
 #include<string>
 #include "Packet.h"
 #include "User.h"
+#include<memory>
 
 using namespace std;
 
@@ -14,14 +15,14 @@ class Vertex
 public:
 
 	Vertex();
-	Vertex(Packet* p, User* u, const long Vertex);
+	Vertex(shared_ptr<Packet> p, shared_ptr<User> u, const long Vertex);
 	~Vertex();
 
 	long color;
 	long vertexNumber;
 	string name;
-	Packet* requestedPacket;
-	User* requestingUser;
+	shared_ptr<Packet> requestedPacket;
+	shared_ptr<User> requestingUser;
 
 
 	long getColor();

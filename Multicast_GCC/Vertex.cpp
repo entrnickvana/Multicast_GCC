@@ -15,7 +15,7 @@ Vertex::Vertex()
 	//cout << "I am a vertex " + name + " of color " + colorString << endl;
 }
 
-Vertex::Vertex(Packet* p, User* u, long vertexNumber_)
+Vertex::Vertex(shared_ptr<Packet> p, shared_ptr<User> u, long vertexNumber_)
 {
 	this->requestedPacket = p;
 	this->requestingUser = u;

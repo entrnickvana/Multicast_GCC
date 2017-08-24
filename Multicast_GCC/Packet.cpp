@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include "Media.h"
+#include<memory>
 
 
 
@@ -14,7 +15,7 @@ Packet::Packet()
 
 }
 
-Packet::Packet(Media* parentMediaArg, unsigned int packetPartitionNumber, unsigned int sizeInBytes_)
+Packet::Packet(shared_ptr<Media> parentMediaArg, unsigned int packetPartitionNumber, unsigned int sizeInBytes_)
 {
    this->sizeInBytes = sizeInBytes_;
    this->parentMedia = parentMediaArg;

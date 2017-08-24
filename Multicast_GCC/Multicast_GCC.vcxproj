@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClInclude Include="Edge.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="mCMP.h" />
     <ClInclude Include="Media.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="Simulation.h" />

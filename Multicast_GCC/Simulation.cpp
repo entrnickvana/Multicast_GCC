@@ -25,19 +25,19 @@ Simulation::Simulation(string graphNameArg)
 
 }
 
-Simulation::Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg)
+Simulation::Simulation(set<shared_ptr<Media>>* mediaArg, set<shared_ptr<User>>* usersArg, string graphNameArg)
 {
-	this->mediaPTR.insert(mediaArg->begin(), mediaArg->end());
-	this->usersPTR.insert(usersArg->begin(), usersArg->end());
+	this->mediaPTR->insert(mediaArg->begin(), mediaArg->end());
+	this->usersPTR->insert(usersArg->begin(), usersArg->end());
     this->graphName = "" + graphNameArg;
 	
 
 }
 
-Simulation::Simulation(set<Media>* mediaArg, set<User>* usersArg, string graphNameArg, int packetsPerMedia)
+Simulation::Simulation(set<shared_ptr<Media>>* mediaArg, set<shared_ptr<User>>* usersArg, string graphNameArg, int packetsPerMedia)
 {
-	this->mediaPTR.insert(mediaArg->begin(), mediaArg->end());
-	this->usersPTR.insert(usersArg->begin(), usersArg->end());
+	this->mediaPTR->insert(mediaArg->begin(), mediaArg->end());
+	this->usersPTR->insert(usersArg->begin(), usersArg->end());
     this->graphName = "" + graphNameArg;
 	
 
@@ -64,13 +64,14 @@ void Simulation::printSimulation()
 
 void Simulation::printUsers()
 {
-	for (set<User>::iterator user_itr = usersPTR.begin(); user_itr != usersPTR.end(); ++user_itr)
+	for (set<shared_ptr<User>>::iterator user_itr = usersPTR->begin(); user_itr != usersPTR->end(); ++user_itr)
 	{
-		cout << user_itr->name << endl << "******************" << endl;
+		cout << user_itr->get()->name << endl << "******************" << endl;
 
-		auto packet_itr = user_itr->cachedPackets.begin();
 
-		for (; packet_itr != user_itr->cachedPackets.end(); ++packet_itr)
+		auto packet_itr = user_itr->get()->cachedPackets.begin();
+
+		for (; packet_itr != user_itr->get()->cachedPackets.end(); ++packet_itr)
 		{
 			cout << packet_itr->first << "   ";
 		}
@@ -84,11 +85,11 @@ void Simulation::printUsers()
 
 void Simulation::printFiles()
 {
-	for (auto files_itr = mediaPTR.begin(); files_itr != mediaPTR.end(); ++files_itr)
+	for (auto files_itr = mediaPTR->begin(); files_itr != mediaPTR->end(); ++files_itr)
 	{
-		cout << files_itr->mediaName << endl << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
+		cout << files_itr->get()->mediaName << endl << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << endl;
 
-		for (auto packet_itr = files_itr->packetsOfMedia.begin(); packet_itr != files_itr->packetsOfMedia.end(); ++packet_itr)
+		for (auto packet_itr = files_itr->get()->packetsOfMedia.begin(); packet_itr != files_itr->get()->packetsOfMedia.end(); ++packet_itr)
 		{
 			cout << packet_itr->packetName << "   ";
 		}
@@ -107,9 +108,9 @@ void Simulation::randomizePackets()
     //Combine All Packets
 
         //For every Media
-        for(set<Media>::iterator itr = mediaPTR.begin(); itr != mediaPTR.end(); ++itr)
+        for(set<shared_ptr<Media>>::iterator itr = mediaPTR->begin(); itr != mediaPTR->end(); ++itr)
         {
-			setOfAllPackets.insert(setOfAllPackets.begin(), itr->packetsOfMedia.begin(), itr->packetsOfMedia.end());
+			setOfAllPackets.insert(setOfAllPackets.begin(), itr->get()->packetsOfMedia.begin(), itr->get()->packetsOfMedia.end());
         }
 
 		vector<Packet> nuRandomizedSetOfPackets(setOfAllPackets.begin(), setOfAllPackets.end());
@@ -136,11 +137,10 @@ void Simulation::request()
 
 void Simulation::generateUsers(unsigned int numberOfUsers_, unsigned int cacheSize_)
 {
-	set<User> tempUserSet;
 	for (unsigned int i = 0; i < numberOfUsers_; i++)\
 	{
-		User temp(cacheSize_, "U" + to_string(i + 1));
-		this->usersPTR.insert(temp);
+		shared_ptr<User> temp = make_shared<User>(cacheSize_, "U" + to_string(i + 1));
+		this->usersPTR->insert(temp);
 	}
 
 }
@@ -167,7 +167,7 @@ void Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberO
 		
 		shared_ptr<Media> mPtr = make_shared<Media>(temp.at(i % 26), mediaSizeInBytes_);
 		mPtr->packetize(numberOfPackets);
-		mediaPTR.insert(*mPtr);
+		mediaPTR->insert(mPtr);
 
 		/*Media mTemp(temp.at(i % 26), mediaSizeInBytes_);
 		tempMediaVec.push_back(mTemp);
@@ -189,9 +189,9 @@ set<Media> Simulation::generateFiles(string fileNameDirectory)
 void Simulation::distributeMedia()
 {
     unsigned int totalNumberOfPackets = setOfAllPackets.size();
-    unsigned int collectiveUserCapacity = usersPTR.size() * usersPTR.begin()->cacheSize;
+    unsigned int collectiveUserCapacity = usersPTR->size() * usersPTR->begin()->get()->cacheSize;
     unsigned int numOfUncachedPackets = totalNumberOfPackets - collectiveUserCapacity;
-	this->packetsPerUser = usersPTR.begin()->cacheSize / setOfAllPackets.begin()->sizeInBytes;
+	this->packetsPerUser = usersPTR->begin()->get()->cacheSize / setOfAllPackets.begin()->sizeInBytes;
 
 	unsigned int userSubsetCounter = 0;
 	unsigned int moddedCounter = 0;
@@ -199,43 +199,43 @@ void Simulation::distributeMedia()
 	
 	int counter = 0;
 	
-	set<User> nuUserSet;
+	set<shared_ptr<User>> nuUserSet;
 
-	for(auto user_itr = usersPTR.begin(); user_itr != usersPTR.end(); ++user_itr)
+	for(auto user_itr = usersPTR->begin(); user_itr != usersPTR->end(); ++user_itr)
 	{
-		User modifiedUser(*user_itr);
+		shared_ptr<User> modifiedUser = *user_itr;
 
 		for (unsigned int i = 0; i < packetsPerUser; i++)
 		{
-			modifiedUser.addPacket(this->randomizedPackets.at(counter++));
+			modifiedUser->addPacket(this->randomizedPackets.at(counter++));
 		}
 
 		nuUserSet.insert(modifiedUser);
 		
 	}
 
-	this->usersPTR.clear();
-	usersPTR.insert(nuUserSet.begin(), nuUserSet.end());
+	this->usersPTR->clear();
+	usersPTR->insert(nuUserSet.begin(), nuUserSet.end());
     
 }
 
-set<pair<Media, User>> Simulation::request(unsigned int numOfRequests)
+set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request(unsigned int numOfRequests)
 {
 
-	set<pair<Media, User>> pairsToRequest;
+	set<pair<shared_ptr<Media>, shared_ptr<User>>> pairsToRequest;
 
 	int tempIndex1;
 	int tempIndex2;
 
 	for (unsigned int i = 0; i < numOfRequests; i++)
 	{
-		tempIndex1 = rand() % usersPTR.size();
-		tempIndex2 = rand() % mediaPTR.size();
-		vector<User> users(usersPTR.begin(), usersPTR.end());
-		vector<Media> media(mediaPTR.begin(), mediaPTR.end());
+		tempIndex1 = rand() % usersPTR->size();
+		tempIndex2 = rand() % mediaPTR->size();
+		vector<shared_ptr<User>> users(usersPTR->begin(), usersPTR->end());
+		vector<shared_ptr<Media>> media(mediaPTR->begin(), mediaPTR->end());
 
 
-		pair<Media, User> pTemp(media.at(tempIndex2), users.at(tempIndex1));
+		pair<shared_ptr<Media>, shared_ptr<User>> pTemp(media.at(tempIndex2), users.at(tempIndex1));
 		pairsToRequest.insert(pTemp);
 
 	}
@@ -245,19 +245,19 @@ set<pair<Media, User>> Simulation::request(unsigned int numOfRequests)
 	return pairsToRequest;
 }
 
-set<Packet> Simulation::identifyNeededPackets(pair<Media, User> requestToIdentify)
+set<Packet> Simulation::identifyNeededPackets(pair<shared_ptr<Media>, shared_ptr<User>> requestToIdentify)
 {
 	
 	set<Packet> usrPackets;
-	for (const auto& pair : requestToIdentify.second.cachedPackets)
+	for (const auto& pair : requestToIdentify.second.get()->cachedPackets)
 	{
-		if (pair.second.parentMedia->mediaName.compare(requestToIdentify.first.mediaName) == 0)
+		if (pair.second.parentMedia->mediaName.compare(requestToIdentify.first.get()->mediaName) == 0)
 		{
 			usrPackets.insert(pair.second);
 		}
 	}
 
-	set<Packet> filePackets(requestToIdentify.first.packetsOfMedia.begin(), requestToIdentify.first.packetsOfMedia.end());
+	set<Packet> filePackets(requestToIdentify.first.get()->packetsOfMedia.begin(), requestToIdentify.first.get()->packetsOfMedia.end());
 
 	vector<Packet> neededPackets(filePackets.size());
 	vector<Packet>::iterator itr;
@@ -301,22 +301,22 @@ set<Packet> Simulation::identifyNeededPackets(pair<Media, User> requestToIdentif
 
 }
 
-set<Vertex> Simulation::createVertices(set<Packet>* identityPackets, User* requestingUser)
+set<Vertex> Simulation::createVertices(set<Packet>* identityPackets, shared_ptr<User> requestingUser)
 {
 	set<Vertex> nuVertices;
 	Packet tempPckt;
 
 	for (set<Packet>::iterator packetItr = identityPackets->begin(); packetItr != identityPackets->end(); ++packetItr)
 	{
-		tempPckt = *packetItr;
-		nuVertices.insert(createVertex(&tempPckt, requestingUser));
+		shared_ptr<Packet> tempPckt = make_shared<Packet>(*packetItr);
+		nuVertices.insert(createVertex(tempPckt, requestingUser));
 	}
 	
 	return nuVertices;
 }
 
 
-Vertex Simulation::createVertex(Packet* identityPacket, User* requestingUser)
+Vertex Simulation::createVertex(shared_ptr<Packet> identityPacket, shared_ptr<User> requestingUser)
 {
 
 	Vertex v(identityPacket, requestingUser, this->graph.numberOfVertices);
@@ -332,7 +332,7 @@ Edge Simulation::createEdge(Vertex * a, Vertex * b)
 }
 
 
-void Simulation::mapRequestsToVertices(set<pair<Media, User>> requestsToMap)
+void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<User>>> requestsToMap)
 {
 	//set<Packet> neededPackets;
 	set<Vertex> verticesToAddToGraph;
@@ -341,14 +341,14 @@ void Simulation::mapRequestsToVertices(set<pair<Media, User>> requestsToMap)
 	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end();  ++reqItr)
 	{
 		
-		User u = reqItr->second;
-		const pair<Media, User> pr = *reqItr;
+		shared_ptr<User> u = reqItr->second;
+		const pair<shared_ptr<Media>, shared_ptr<User>> pr = *reqItr;
 
-		set<Packet> neededPackets = identifyNeededPackets(pr);
+		set<Packet> neededPackets(identifyNeededPackets(pr));
 
 		//Insert All Vertices
 
-		this->graph.addVertices(&createVertices(&neededPackets, &u));
+		this->graph.addVertices(&createVertices(&neededPackets, u));
 	}
 
 	//Iterate over each user to check whether there should be an edge

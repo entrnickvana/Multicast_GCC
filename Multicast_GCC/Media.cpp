@@ -30,10 +30,10 @@ void Media::packetize(unsigned int numberOfPackets)
 	Packet* temp1;
 	Packet* temp2;
 	*/
-
 	for(unsigned int i = 0; i < numberOfPackets; i++)
     {
-		Packet nuPacket(this, i+1, this->mediaSizeInBytes/numberOfPackets);
+		
+		Packet nuPacket(shared_from_this(), i+1, this->mediaSizeInBytes/numberOfPackets);
         this->addPacket(nuPacket);
 		this->setOfPackets.insert(nuPacket);
 		
@@ -52,9 +52,29 @@ bool Media::operator<(const Media& rhs) const
 	return this->mediaName.compare(rhs.mediaName) < 0;
 }
 
-bool Media::operator==(const Media & rhs) const
+bool Media::operator>(const Media& rhs) const
 {
-	return this->mediaName.compare(rhs.mediaName) < 0;
+	return !(rhs < *this);
+}
+
+bool Media::operator<=(const Media& rhs) const
+{
+	return !(*this > rhs);
+}
+
+bool Media::operator>=(const Media& rhs) const
+{
+	return !(*this < rhs);
+}
+
+bool Media::operator==(const Media& rhs) const
+{
+	return this->mediaName.compare(rhs.mediaName) == 0;
+}
+
+bool Media::operator!=(const Media& rhs) const
+{
+	return !(*this == rhs);
 }
 
 void Media::addPacket(Packet packetToAdd)
