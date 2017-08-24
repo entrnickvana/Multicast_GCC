@@ -23,6 +23,8 @@ class Graph
 
 	bool addVertex(Vertex* v);
 	bool addEdge(Edge* e);
+	bool addVertices(set<Vertex>* vertices);
+	bool addEdges(set<Edge>* edges);
     bool removeEdge(Edge* e);
 	bool removeVertex(Vertex* v);
     void plot(string plotNumber);

@@ -9,7 +9,7 @@ Media::Media()
 Media::Media(string mediaNameArg, unsigned int mediaSizeInBytes_)
 {
 
-    this->mediaName.assign(mediaNameArg);
+	this->mediaName = mediaNameArg;
 	this->mediaSizeInBytes = mediaSizeInBytes_;
 
 }
@@ -17,7 +17,7 @@ Media::Media(string mediaNameArg, unsigned int mediaSizeInBytes_)
 Media::Media(string mediaNameArg, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_)
 {
 
-	this->mediaName.assign(mediaNameArg);
+	this->mediaName = mediaNameArg;
 	this->mediaSizeInBytes = mediaSizeInBytes_;
     this->packetize(numberOfPackets);
 	
@@ -36,6 +36,7 @@ void Media::packetize(unsigned int numberOfPackets)
 		Packet nuPacket(this, i+1, this->mediaSizeInBytes/numberOfPackets);
         this->addPacket(nuPacket);
 		this->setOfPackets.insert(nuPacket);
+		
 		/*  /////////////  DEBUG ONLY  /////////////////
 			temp1 = &nuPacket;
 			temp2 = this->packetsOfMedia.begin()._Ptr;

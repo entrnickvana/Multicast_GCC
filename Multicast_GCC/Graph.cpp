@@ -33,6 +33,31 @@ bool Graph::addEdge(Edge* e)
     return true;
 }
 
+bool Graph::addVertices(set<Vertex>* vertices)
+{
+	bool result = true;
+	for (auto it = vertices->begin(); it != vertices->end(); ++it)
+	{
+		Vertex tempV = *it;
+		result = result & addVertex(&tempV);
+	}
+
+	return result;
+}
+
+bool Graph::addEdges(set<Edge>* edges)
+{
+	bool result = true;
+	for (auto it = edges->begin(); it != edges->end(); ++it)
+	{
+		Edge tempV = *it;
+		result = result & addEdge(&tempV);
+
+	}
+
+	return result;
+}
+
 bool Graph::addVertex(Vertex* v)
 {
     Vertices.push_back(*v);

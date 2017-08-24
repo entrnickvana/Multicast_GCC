@@ -61,7 +61,9 @@ class Simulation
 
 		Vertex createVertex(Packet* identityPacket, User* requestingUser);
 
-		set<Vertex> mapRequestsToVertices(set<pair<Media, User>> requestsToMap);
+		Edge createEdge(Vertex* a, Vertex* b);
+
+		void mapRequestsToVertices(set<pair<Media, User>> requestsToMap);
         
 
 

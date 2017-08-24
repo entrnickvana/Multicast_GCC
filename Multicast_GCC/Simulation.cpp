@@ -12,6 +12,7 @@
 #include "Packet.h"
 #include<iostream>
 #include<random>
+#include<memory>
 
 Simulation::Simulation()
 {
@@ -108,7 +109,7 @@ void Simulation::randomizePackets()
         //For every Media
         for(set<Media>::iterator itr = mediaPTR.begin(); itr != mediaPTR.end(); ++itr)
         {
-			setOfAllPackets.insert(setOfAllPackets.end(), itr->packetsOfMedia.begin(), itr->packetsOfMedia.end());
+			setOfAllPackets.insert(setOfAllPackets.begin(), itr->packetsOfMedia.begin(), itr->packetsOfMedia.end());
         }
 
 		vector<Packet> nuRandomizedSetOfPackets(setOfAllPackets.begin(), setOfAllPackets.end());
@@ -153,14 +154,25 @@ void Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberO
 
 	this->nameBuilder.insert(nameBuilder.end(), temp.begin(), temp.end());
 
-	set<Media> tempMediaSet;
-
 
 	for (unsigned int i = 0; i < numberOfFiles_; i++)
 	{
-		Media mTemp(temp.at(i % 26), mediaSizeInBytes_);
+		/*Media mTemp(temp.at(i % 26), mediaSizeInBytes_);
 		mTemp.packetize(numberOfPackets);
-		this->mediaPTR.insert(mTemp);
+		this->mediaPTR.insert(mTemp);*/
+
+		//Create media object
+
+		// Instantiate shared_ptr with copy constuctor of media object
+		
+		shared_ptr<Media> mPtr = make_shared<Media>(temp.at(i % 26), mediaSizeInBytes_);
+		mPtr->packetize(numberOfPackets);
+		mediaPTR.insert(*mPtr);
+
+		/*Media mTemp(temp.at(i % 26), mediaSizeInBytes_);
+		tempMediaVec.push_back(mTemp);
+		tempMediaVec.back().packetize(numberOfPackets);*/
+
 	}
 	
 
@@ -217,15 +229,13 @@ set<pair<Media, User>> Simulation::request(unsigned int numOfRequests)
 
 	for (unsigned int i = 0; i < numOfRequests; i++)
 	{
-		tempIndex1 = rand() % usersPTR.size() + 1;
-		tempIndex2 = rand() % mediaPTR.size() + 1;
-		set<User>::iterator uItr = usersPTR.begin();
-		set<Media>::iterator mItr = mediaPTR.begin();
+		tempIndex1 = rand() % usersPTR.size();
+		tempIndex2 = rand() % mediaPTR.size();
+		vector<User> users(usersPTR.begin(), usersPTR.end());
+		vector<Media> media(mediaPTR.begin(), mediaPTR.end());
 
-		advance(uItr, tempIndex1);
-		advance(mItr, tempIndex2);
 
-		pair<Media, User> pTemp(*mItr, *uItr);
+		pair<Media, User> pTemp(media.at(tempIndex2), users.at(tempIndex1));
 		pairsToRequest.insert(pTemp);
 
 	}
@@ -241,21 +251,24 @@ set<Packet> Simulation::identifyNeededPackets(pair<Media, User> requestToIdentif
 	set<Packet> usrPackets;
 	for (const auto& pair : requestToIdentify.second.cachedPackets)
 	{
-		usrPackets.insert(pair.second);
+		if (pair.second.parentMedia->mediaName.compare(requestToIdentify.first.mediaName) == 0)
+		{
+			usrPackets.insert(pair.second);
+		}
 	}
 
 	set<Packet> filePackets(requestToIdentify.first.packetsOfMedia.begin(), requestToIdentify.first.packetsOfMedia.end());
 
-	vector<Packet> neededPackets;
+	vector<Packet> neededPackets(filePackets.size());
 	vector<Packet>::iterator itr;
 
 	itr = set_difference(filePackets.begin(), filePackets.end(), usrPackets.begin(), usrPackets.end(), neededPackets.begin());
 
 	neededPackets.resize(itr - neededPackets.begin());
 
-	set<Packet> dummySet;
+	set<Packet> s(neededPackets.begin(), neededPackets.end());
 
-	return dummySet;
+	return s;
 	/*set<Packet> localPackets;
 	set<Packet> requestedPackets;
 
@@ -312,8 +325,14 @@ Vertex Simulation::createVertex(Packet* identityPacket, User* requestingUser)
 	return v;
 }
 
+Edge Simulation::createEdge(Vertex * a, Vertex * b)
+{
+	Edge e(a, b);
+	return e;
+}
 
-set<Vertex> Simulation::mapRequestsToVertices(set<pair<Media, User>> requestsToMap)
+
+void Simulation::mapRequestsToVertices(set<pair<Media, User>> requestsToMap)
 {
 	//set<Packet> neededPackets;
 	set<Vertex> verticesToAddToGraph;
@@ -322,57 +341,77 @@ set<Vertex> Simulation::mapRequestsToVertices(set<pair<Media, User>> requestsToM
 	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end();  ++reqItr)
 	{
 		
-		const pair<Media, User> currentPair = *reqItr;
+		User u = reqItr->second;
+		const pair<Media, User> pr = *reqItr;
 
-		set<Packet> neededPackets(identifyNeededPackets(currentPair));
+		set<Packet> neededPackets = identifyNeededPackets(pr);
 
 		//Insert All Vertices
 
+		this->graph.addVertices(&createVertices(&neededPackets, &u));
+	}
 
-		/*  ////////////////  Description of Graph Construction and Definition  /////////////////////////
-		
-		// Vertex = (PACKET IDENTITY OF VERTEX, USER REQUETING PACKET) 
-		//        = (GET_PACKET_IDENTITY, GET_REQUESTING_USER)
-		//		  = (p(v), u(v)) where p(v) computes packet from vertex v element of V, u(v) computes user v element V
+	//Iterate over each user to check whether there should be an edge
+	for (auto vItr = this->graph.Vertices.begin(); vItr != this->graph.Vertices.end(); ++vItr)
+	{
+		Vertex current = *vItr;
 
-		// Steps for constructing graph
+		for (auto otherItr = graph.Vertices.begin(); otherItr != graph.Vertices.end(); ++otherItr)
+		{
+			Vertex otherVertex = *otherItr;
 
-		// Each vertex is an abstraction composed of the pair(Packet, User Requesting Packet)
+			if (otherVertex.requestingUser->cachedPackets.end() == otherVertex.requestingUser->cachedPackets.find(current.requestedPacket->packetName))
+			{
+				this->graph.addEdge(&createEdge(&otherVertex, &current));
+			}
 
-		// An edge is an abstraction composed of the pair (v_1, v_2) where v_1, v_2 are unique elements in V
-
-		   An edge is add to the Graph G which is compose of the (V,E)  if
-
-		   1. v_1 is not in the cache of the user associated to v_2 by u(v)
-
-		   2. v_1 and v_2 do not represent the same packet
-
-		   ///////////  Steps  ////////////////
-
-		   1. Requests are placed
-		   
-		   2. Given set of (File, User) pairs which are the raw materials for determinging actual packet requests
-
-		   3. Iterate through each given User
-
-		   //For
-
-		   		4. Access u_i local cached packets, to determin local subset of packets
-
-		   		5. Access full set of packets belonging to requested file through pointer
-
-				6. Subtract local from complete set
-
-				7. 
+		}
 
 		
-		
-		*/
 
 	}
 
-	set<Vertex> dummy;
-	return dummy;
+
+
+	/*  ////////////////  Description of Graph Construction and Definition  /////////////////////////
+
+	// Vertex = (PACKET IDENTITY OF VERTEX, USER REQUETING PACKET)
+	//        = (GET_PACKET_IDENTITY, GET_REQUESTING_USER)
+	//		  = (p(v), u(v)) where p(v) computes packet from vertex v element of V, u(v) computes user v element V
+
+	// Steps for constructing graph
+
+	// Each vertex is an abstraction composed of the pair(Packet, User Requesting Packet)
+
+	// An edge is an abstraction composed of the pair (v_1, v_2) where v_1, v_2 are unique elements in V
+
+	An edge is add to the Graph G which is compose of the (V,E)  if
+
+	1. v_1 is not in the cache of the user associated to v_2 by u(v)
+
+	2. v_1 and v_2 do not represent the same packet
+
+	///////////  Steps  ////////////////
+
+	1. Requests are placed
+
+	2. Given set of (File, User) pairs which are the raw materials for determinging actual packet requests
+
+	3. Iterate through each given User
+
+	//For
+
+	4. Access u_i local cached packets, to determin local subset of packets
+
+	5. Access full set of packets belonging to requested file through pointer
+
+	6. Subtract local from complete set
+
+	7.
+
+
+
+	*/
 }
 
 template<typename T>

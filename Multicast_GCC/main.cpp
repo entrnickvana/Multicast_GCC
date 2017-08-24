@@ -38,6 +38,12 @@ int main()
 	sim1.printFiles();
 	sim1.printUsers();
 
+	set<pair<Media, User>> p1(sim1.request(4));
+
+	sim1.mapRequestsToVertices(p1);
+
+
+	Graph gig;
 
 
 
