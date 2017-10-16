@@ -121,8 +121,10 @@
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="colorFunct.h" />
     <ClInclude Include="Edge.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="greedyColoring.h" />
     <ClInclude Include="mCMP.h" />
     <ClInclude Include="Media.h" />
     <ClInclude Include="Packet.h" />

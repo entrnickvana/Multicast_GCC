@@ -27,63 +27,66 @@ Graph::Graph(set<Media>* files_, set<User>* users_)
 
 Graph::~Graph(){}
 
-bool Graph::addEdge(Edge* e)
+bool Graph::addEdge(shared_ptr<Edge> e)
 {
-    Edges.push_back(*e);
+    Edges.push_back(e);
+	e->begin->adj.push_front(e);
     return true;
 }
 
-bool Graph::addVertices(set<Vertex>* vertices)
+bool Graph::addVertices(set<shared_ptr<Vertex>> vertices)
 {
 	bool result = true;
-	for (auto it = vertices->begin(); it != vertices->end(); ++it)
+	for (auto it = vertices.begin(); it != vertices.end(); ++it)
 	{
-		Vertex tempV = *it;
-		result = result & addVertex(&tempV);
+		result = result & addVertex(*it);
 	}
 
 	return result;
 }
 
-bool Graph::addEdges(set<Edge>* edges)
+bool Graph::addEdges(set<shared_ptr<Edge>> edges)
 {
 	bool result = true;
-	for (auto it = edges->begin(); it != edges->end(); ++it)
+	for (auto it = edges.begin(); it != edges.end(); ++it)
 	{
-		Edge tempV = *it;
-		result = result & addEdge(&tempV);
+		result = result & addEdge(*it);
 
 	}
 
 	return result;
 }
 
-bool Graph::addVertex(Vertex* v)
+bool Graph::addVertex(shared_ptr<Vertex> v)
 {
-    Vertices.push_back(*v);
+    Vertices.push_back(v);
     return true;
 }
 
-bool Graph::removeEdge(Edge* e)
+bool Graph::removeEdge(shared_ptr<Edge> e)
 {
     for(unsigned i = 0; i < Edges.size(); i++)
     {
-        if(e->toString().compare(Edges[i].toString()) == 0)
+
+        
+        if(e->getIdentity().compare(Edges[i]->getIdentity()) == 0)
         {
 			Edges.erase(Edges.begin() + i);
             return true;
+
         }else return false;
+
     }
 
     return false;
    
 }
 
-bool Graph::removeVertex(Vertex* v)
+bool Graph::removeVertex(shared_ptr<Vertex> v)
 {
     for(unsigned i = 0; i < Vertices.size(); i++)
     {
-        if(v->toString().compare(Vertices[i].toString()) == 0)
+        if(v->toString().compare(Vertices[i]->toString()) == 0)
         {
             Vertices.erase(Vertices.begin() + i);
             return true;
@@ -109,13 +112,14 @@ void Graph::plot(string plotNumber)
     //Print each vertex
     for(unsigned i = 0; i < Vertices.size(); i++)
     {
-        graphFile << "\"" + Vertices[i].name + "\"\n"; 
+        graphFile << "\"" + Vertices[i]->name + "\"\n"; 
     }
 
     //Print each Edge
     for(unsigned j = 0; j < Edges.size(); j++)
     {
-        graphFile << "\"" + Edges[j].toString() + "\"";
+
+        graphFile << "\"" + Edges[j]->getIdentity() + "\"\n";
     }
 
 /*  The more efficient traversal of a vector
@@ -153,5 +157,11 @@ bool Graph::packetsAreEquivalent(Vertex lhs, Vertex rhs)
 	return cond1 && cond2;
 
 
+}
+
+template<typename SortFunc>
+int Graph::color(Graph g1, SortFunc colorFunc)
+{
+	return colorFunc(g1);
 }
 

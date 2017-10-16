@@ -32,6 +32,8 @@ class Simulation
 		unsigned int packetsPerUser;
 		vector<string> nameBuilder;
 		vector<pair<shared_ptr<Media>, shared_ptr<User>>> requestHistory;
+		unsigned int requestNumber;
+		unsigned int interferenceComparison;
 		
 
         
@@ -57,13 +59,15 @@ class Simulation
 
 		set<Packet> identifyNeededPackets(pair<shared_ptr<Media>, shared_ptr<User>> requestToIdentify);
 
-		set<Vertex> createVertices(set<Packet>* identityPackets, shared_ptr<User> requestingUser);
+		set<shared_ptr<Vertex>> createVertices(set<Packet>* identityPackets, shared_ptr<User> requestingUser);
 
-		Vertex createVertex(shared_ptr<Packet> identityPacket, shared_ptr<User> requestingUser);
+		shared_ptr<Vertex> createVertex(shared_ptr<Packet> identityPacket, shared_ptr<User> requestingUser);
 
-		Edge createEdge(Vertex* a, Vertex* b);
+		shared_ptr<Edge> createEdge(shared_ptr<Vertex> a, shared_ptr<Vertex> b);
 
 		void mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<User>>> requestsToMap);
+
+
         
 
 

@@ -54,8 +54,8 @@ int main()
 
 	Simulation sim1("G_CODE");
 
-	sim1.generateFiles(3,16,256);
-	sim1.generateUsers(6, 64);
+	sim1.generateFiles(4,4,128);
+	sim1.generateUsers(3,512);
 	sim1.randomizePackets();
 	sim1.distributeMedia();
 	sim1.printFiles();
@@ -72,5 +72,6 @@ int main()
 
 
 	getchar();
+
 
 }

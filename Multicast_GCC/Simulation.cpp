@@ -13,6 +13,10 @@
 #include<iostream>
 #include<random>
 #include<memory>
+#include<cstdlib>
+#include<ctime>
+
+
 
 Simulation::Simulation()
 {
@@ -195,7 +199,17 @@ void Simulation::distributeMedia()
     unsigned int totalNumberOfPackets = setOfAllPackets.size();
     unsigned int collectiveUserCapacity = usersPTR->size() * usersPTR->begin()->get()->cacheSize;
     unsigned int numOfUncachedPackets = totalNumberOfPackets - collectiveUserCapacity;
-	this->packetsPerUser = usersPTR->begin()->get()->cacheSize / setOfAllPackets.begin()->sizeInBytes;
+
+	// Can we distrubute the packets uniquely among each user
+
+	// If not, 
+
+
+
+	this->packetsPerUser = totalNumberOfPackets / usersPTR->size();
+
+	if (this->packetsPerUser < 1)
+		this->packetsPerUser = 1;
 
 	unsigned int userSubsetCounter = 0;
 	unsigned int moddedCounter = 0;
@@ -225,26 +239,39 @@ void Simulation::distributeMedia()
 
 set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request(unsigned int numOfRequests)
 {
-
-	set<pair<shared_ptr<Media>, shared_ptr<User>>> pairsToRequest;
+	srand(0);
+	set<pair<shared_ptr<Media>, shared_ptr<User>>> pairsToRequest;  //(pairCMP);
 
 	int tempIndex1;
 	int tempIndex2;
 
+	cout << "/////////////////      REQUEST #" << requestNumber << "      ////////////////////////" << endl << endl;
+
+
+
 	for (unsigned int i = 0; i < numOfRequests; i++)
 	{
-		tempIndex1 = rand() % usersPTR->size();
+		
+		tempIndex1 = rand() % usersPTR->size();	
 		tempIndex2 = rand() % mediaPTR->size();
 		vector<shared_ptr<User>> users(usersPTR->begin(), usersPTR->end());
 		vector<shared_ptr<Media>> media(mediaPTR->begin(), mediaPTR->end());
 
 
 		pair<shared_ptr<Media>, shared_ptr<User>> pTemp(media.at(tempIndex2), users.at(tempIndex1));
+		
+		cout << pTemp.second.get()->name << " requests " << pTemp.first.get()->mediaName << "   ";
+
 		pairsToRequest.insert(pTemp);
 
+		requestNumber++;
+
 	}
+
+	cout << endl << endl;
 	
 	this->requestHistory.insert(requestHistory.end(),pairsToRequest.begin(), pairsToRequest.end());
+
 
 	return pairsToRequest;
 }
@@ -305,46 +332,47 @@ set<Packet> Simulation::identifyNeededPackets(pair<shared_ptr<Media>, shared_ptr
 
 }
 
-set<Vertex> Simulation::createVertices(set<Packet>* identityPackets, shared_ptr<User> requestingUser)
+set<shared_ptr<Vertex>> Simulation::createVertices(set<Packet>* identityPackets, shared_ptr<User> requestingUser)
 {
-	set<Vertex> nuVertices;
+	set<shared_ptr<Vertex>> nuVertices;
 	Packet tempPckt;
 
-	for (set<Packet>::iterator packetItr = identityPackets->begin(); packetItr != identityPackets->end(); ++packetItr)
+	for (auto packetItr = identityPackets->begin(); packetItr != identityPackets->end(); ++packetItr)
 	{
 		shared_ptr<Packet> tempPckt = make_shared<Packet>(*packetItr);
 		nuVertices.insert(createVertex(tempPckt, requestingUser));
 	}
-	
+
 	return nuVertices;
 }
 
 
-Vertex Simulation::createVertex(shared_ptr<Packet> identityPacket, shared_ptr<User> requestingUser)
+shared_ptr<Vertex> Simulation::createVertex(shared_ptr<Packet> identityPacket, shared_ptr<User> requestingUser)
 {
 
-	Vertex v(identityPacket, requestingUser, this->graph.numberOfVertices);
+	shared_ptr<Vertex> v = make_shared<Vertex>(identityPacket, requestingUser, this->graph.numberOfVertices++);
 
-	
+
 	return v;
 }
 
-Edge Simulation::createEdge(Vertex * a, Vertex * b)
+shared_ptr<Edge> Simulation::createEdge(shared_ptr<Vertex> a, shared_ptr<Vertex> b)
 {
-	Edge e(a, b);
-	return e;
+
+	return make_shared<Edge>(a, b);
 }
 
 
 void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<User>>> requestsToMap)
 {
 	//set<Packet> neededPackets;
-	set<Vertex> verticesToAddToGraph;
+	//set<shared_ptr<Vertex>> verticesToAddToGraph;
+	unordered_map<string, Packet>::iterator it;
 
 	//Iterate through each user
-	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end();  ++reqItr)
+	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end(); ++reqItr)
 	{
-		
+
 		shared_ptr<User> u = reqItr->second;
 		const pair<shared_ptr<Media>, shared_ptr<User>> pr = *reqItr;
 
@@ -352,21 +380,31 @@ void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<Us
 
 		//Insert All Vertices
 
-		this->graph.addVertices(&createVertices(&neededPackets, u));
+		this->graph.addVertices(createVertices(&neededPackets, u));
 	}
+
+	cout << "/////////////////////// Interference Comparison ////////////////" << endl << endl;
+
+
 
 	//Iterate over each user to check whether there should be an edge
 	for (auto vItr = this->graph.Vertices.begin(); vItr != this->graph.Vertices.end(); ++vItr)
 	{
-		Vertex current = *vItr;
+		Vertex current = *vItr->get();
 
 		for (auto otherItr = graph.Vertices.begin(); otherItr != graph.Vertices.end(); ++otherItr)
 		{
-			Vertex otherVertex = *otherItr;
-
-			if (otherVertex.requestingUser->cachedPackets.end() == otherVertex.requestingUser->cachedPackets.find(current.requestedPacket->packetName))
+			Vertex otherVertex = *otherItr->get();
+			if (otherVertex.name.compare( current.name) != 0)
 			{
-				this->graph.addEdge(&createEdge(&otherVertex, &current));
+				it = otherVertex.requestingUser->cachedPackets.find(current.requestedPacket->packetName);
+
+				if (it == otherVertex.requestingUser->cachedPackets.end())
+				{
+					cout << otherVertex.name << "->" << current.name << endl;
+					this->graph.addEdge(createEdge(*otherItr, *vItr));
+				}
+
 			}
 
 		}

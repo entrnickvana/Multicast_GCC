@@ -6,7 +6,8 @@
 #include<string>
 #include "Packet.h"
 #include "User.h"
-#include<memory>
+#include<memory.h>
+#include "Edge.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
 	string name;
 	shared_ptr<Packet> requestedPacket;
 	shared_ptr<User> requestingUser;
+	list<shared_ptr<Edge>> adj;
 
 
 	long getColor();
@@ -31,6 +33,11 @@ public:
 	void setName(string newName);
 	string toString();
 	bool operator<(const Vertex& lhs) const;
+	bool operator>(const Vertex& rhs) const;
+	bool operator<=(const Vertex& rhs) const;
+	bool operator>=(const Vertex& rhs) const;
+	bool operator==(const Vertex& rhs) const;
+	bool operator!=(const Vertex& rhs) const;
 	
 
 

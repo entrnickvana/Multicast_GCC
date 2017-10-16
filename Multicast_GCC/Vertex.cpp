@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include "Vertex.h"
+#include "Edge.h"
 
 using namespace std;
 
@@ -21,7 +22,8 @@ Vertex::Vertex(shared_ptr<Packet> p, shared_ptr<User> u, long vertexNumber_)
 	this->requestingUser = u;
 	this->vertexNumber = vertexNumber_;
 
-	this->name = "v" + vertexNumber;
+
+	this->name.assign( "v" + to_string(vertexNumber));
 
 }
 
@@ -56,6 +58,31 @@ string Vertex::toString()
 bool Vertex::operator<(const Vertex& lhs) const
 {
 	return this->vertexNumber < lhs.vertexNumber;
+}
+
+bool Vertex::operator>(const Vertex& rhs) const
+{
+	return !(rhs < *this);
+}
+
+bool Vertex::operator<=(const Vertex& rhs) const
+{
+	return !(*this > rhs);
+}
+
+bool Vertex::operator>=(const Vertex& rhs) const
+{
+	return !(*this < rhs);
+}
+
+bool Vertex::operator==(const Vertex& rhs) const
+{
+	return this->vertexNumber == rhs.vertexNumber;
+}
+
+bool Vertex::operator!=(const Vertex& rhs) const
+{
+	return !(*this == rhs);
 }
 
 

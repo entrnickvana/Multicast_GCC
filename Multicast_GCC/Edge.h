@@ -2,23 +2,24 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include "Vertex.h"
-#include "Edge.h"
-
+#include<memory>
 
 using namespace std;
+
+class Vertex;
 
 class Edge
 {
     public:
 
     Edge();
-    Edge(Vertex* begin_, Vertex* end_);
+    Edge(shared_ptr<Vertex> begin_, shared_ptr<Vertex> end_);
 	~Edge();
 
-    Vertex* begin;
-    Vertex* end;
-    string toString();
+    shared_ptr<Vertex> begin;
+    shared_ptr<Vertex> end;
+	string getIdentity();
+
 
     private:
 
