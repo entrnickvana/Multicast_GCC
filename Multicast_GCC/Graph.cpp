@@ -159,10 +159,36 @@ bool Graph::packetsAreEquivalent(Vertex lhs, Vertex rhs)
 
 }
 
-int Graph::shareEdges(shared_ptr<Vertex> begin, shared_ptr<Vertex> end)
+int Graph::sharedEdges(shared_ptr<Vertex> begin, shared_ptr<Vertex> end)
 {
+    list<shared_ptr<Edge>>* begEdges = &begin->adj;
+    list<shared_ptr<Edge>>* endEdges = &end->adj;
+
+            //Does begin have an edge pointing to end
+    for (auto beg_itr = begEdges->begin(); beg_itr != begEdges->end(); ++beg_itr)
+    {
+        if(*begin == *((*beg_itr)->begin) && *end == *((*beg_itr)->end))
+            return 1;
+    }
+
+    for (auto end_itr = endEdges->begin(); end_itr != endEdges->end(); ++end_itr)
+    {
+        if(*end == *((*end_itr)->begin) && *begin == *((*end_itr)->end))
+            return -1;
+    }
+
 	return 0;
 }
+
+int Graph::edgesAmongSets(set<shared_ptr<Vertex>> a, set<shared_ptr<Vertex>> b)
+{
+    int result_accumulator = 0;
+    for(auto a_itr = a.begin(); a_itr != a.end(); ++a_itr)
+        for(auto b_itr = b.begin(); b_itr != b.end(); ++b_itr)
+            if(sharedEdges(*a_itr, *b_itr) != 0)
+                return 1;
+}
+
 
 template<typename SortFunc>
 int Graph::color(Graph g1, SortFunc colorFunc)
