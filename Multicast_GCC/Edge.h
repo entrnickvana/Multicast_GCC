@@ -18,8 +18,13 @@ class Edge
 
     shared_ptr<Vertex> begin;
     shared_ptr<Vertex> end;
-	string getIdentity();
-
+	string getIdentity() const;
+	bool operator<(const Edge& lhs) const;
+	bool operator>(const Edge& rhs) const;
+	bool operator<=(const Edge& rhs) const;
+	bool operator>=(const Edge& rhs) const;
+	bool operator==(const Edge& rhs) const;
+	bool operator!=(const Edge& rhs) const;
 
     private:
 

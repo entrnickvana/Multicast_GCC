@@ -51,12 +51,21 @@ int main()
 	//	cout << entry->mediaName << endl;
 	//}
 
+	
+
 
 	Simulation sim1("G_CODE");
 
+	// Generate 4 Files, divided into 4 Packets each, of 128 bytes per file
 	sim1.generateFiles(4,4,128);
+
+	// Generate 3 Users, each with a cache size M = 512 bytes
 	sim1.generateUsers(3,512);
+
+	// Randomize the distribution of packets
 	sim1.randomizePackets();
+
+	// 
 	sim1.distributeMedia();
 	sim1.printFiles();
 	sim1.printUsers();
@@ -74,4 +83,9 @@ int main()
 	getchar();
 
 
+}
+
+template<typename T>
+	bool ptr_less(T lhs, T rhs) {
+    return std::less<decltype(*lhs)>()(*lhs, *rhs);
 }

@@ -113,16 +113,19 @@ void Simulation::randomizePackets()
 {
     //Combine All Packets
 
-        //For every Media
+        //For every Media, insert all its packets into a comprehensive set of all packets
         for(set<shared_ptr<Media>>::iterator itr = mediaPTR->begin(); itr != mediaPTR->end(); ++itr)
         {
 			setOfAllPackets.insert(setOfAllPackets.begin(), itr->get()->packetsOfMedia.begin(), itr->get()->packetsOfMedia.end());
         }
 
+        // Use the framework properties of vector to randomize the ordered set
 		vector<Packet> nuRandomizedSetOfPackets(setOfAllPackets.begin(), setOfAllPackets.end());
 
+		// Randomly shuffle the packets stored in the vector
 		random_shuffle(nuRandomizedSetOfPackets.begin(), nuRandomizedSetOfPackets.end());
 
+		// Use the already allocated randomized Packets Vector to avoid dangling pointers
 		this->randomizedPackets.insert(randomizedPackets.end(), nuRandomizedSetOfPackets.begin(), nuRandomizedSetOfPackets.end());
 
 
@@ -172,9 +175,12 @@ void Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberO
 		//Create media object
 
 		// Instantiate shared_ptr with copy constuctor of media object
-		
 		shared_ptr<Media> mPtr = make_shared<Media>(temp.at(i % 26), mediaSizeInBytes_);
+
+		// Divide Each piece of media into packets
 		mPtr->packetize(numberOfPackets);
+
+		// Insert Each New Media which has also been packetized into the set of all media: mediaPTR
 		mediaPTR->insert(mPtr);
 
 		/*Media mTemp(temp.at(i % 26), mediaSizeInBytes_);
@@ -456,12 +462,14 @@ void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<Us
 	*/
 }
 
+/*
 template<typename T>
 void Simulation::randomizeWithFunctor(T functor)
 {
 
 
 }
+*/
 
 Simulation::~Simulation()
 {

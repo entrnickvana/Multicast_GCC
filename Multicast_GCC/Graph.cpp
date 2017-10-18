@@ -20,7 +20,7 @@ Graph::Graph(set<Media>* files_, set<User>* users_)
 {
 	this->files = files_;
 	this->users = users_;
-
+    
 
 
 }
@@ -157,6 +157,11 @@ bool Graph::packetsAreEquivalent(Vertex lhs, Vertex rhs)
 	return cond1 && cond2;
 
 
+}
+
+int Graph::shareEdges(shared_ptr<Vertex> begin, shared_ptr<Vertex> end)
+{
+	return 0;
 }
 
 template<typename SortFunc>

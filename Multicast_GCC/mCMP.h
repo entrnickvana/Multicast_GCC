@@ -10,7 +10,7 @@ struct mCMP
 {
 	bool operator()(const shared_ptr<T>& lhs, const shared_ptr<T>& rhs)
 	{
-		return *lhs.get() < *rhs.get();
+		return *lhs == *rhs;
 	}
 
 };

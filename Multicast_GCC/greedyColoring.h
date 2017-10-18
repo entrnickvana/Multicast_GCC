@@ -45,10 +45,12 @@ public:
 		
 		while(V.size() != 0)
 		{
-			Vertex temp_v = *V.begin();
+			Vertex temp_v = *(V.begin());
 			
 			for(auto it = V.begin(); it!= V.end(); ++it)
 			{
+
+				
 				if( (getT(temp_v, &sim->graph, sim) == getT(*it, &sim->graph, sim)) && temp_v != *it)
 				{
 					

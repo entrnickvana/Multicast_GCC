@@ -1,13 +1,17 @@
 #pragma once
-#include "Graph.h"
 
 using namespace std;
 
+
+template<class G>
 class colorFunct
 {
     public:
     colorFunct(){};
+    ~colorFunct(){};
 
-	virtual int operator()(Graph G) {};
+	virtual int operator()(G g) {};
+
+	private:
 
 };

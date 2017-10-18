@@ -4,8 +4,10 @@
 #include<vector>
 #include "Vertex.h"
 #include "Edge.h"
+#include "mCMP.h"
 
 using namespace std;
+
 
 
 Vertex::Vertex()
@@ -22,7 +24,7 @@ Vertex::Vertex(shared_ptr<Packet> p, shared_ptr<User> u, long vertexNumber_)
 	this->requestingUser = u;
 	this->vertexNumber = vertexNumber_;
 
-
+	
 	this->name.assign( "v" + to_string(vertexNumber));
 
 }

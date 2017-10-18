@@ -22,9 +22,10 @@ class Graph
 	set<Media>* files;
 	set<User>* users;
 
+/*
 	template<typename SortFunc>
 	int color(Graph g1, SortFunc colorFunc);
-
+*/
 	bool addVertex(shared_ptr<Vertex> v);
 	bool addEdge(shared_ptr<Edge> e);
 	bool addVertices(set<shared_ptr<Vertex>> vertices);
@@ -35,8 +36,23 @@ class Graph
 	shared_ptr<User> getAssociatedUser(Vertex v);
 	shared_ptr<Packet> getAssociatedPacket(Vertex v);
 	bool packetsAreEquivalent(Vertex lhs, Vertex rhs);
+	int	shareEdges(shared_ptr<Vertex> begin, shared_ptr<Vertex> end);
+
 	long numberOfVertices;
 	long numberOfEdges;
+
+	/*
+	template<class T>
+	struct shrdPtrPred1: public binary_function(shared_ptr<T>, shared_ptr<T>, bool)
+	{
+		bool operator()(const T& rhs, const T& lhs)
+		{
+			return *rhs == *lhs;	
+		}
+
+	};
+
+	*/
 
 
     private:

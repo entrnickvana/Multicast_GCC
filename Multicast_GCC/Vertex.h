@@ -6,8 +6,9 @@
 #include<string>
 #include "Packet.h"
 #include "User.h"
-#include<memory.h>
+#include <memory>
 #include "Edge.h"
+#include "colorFunct.h"
 
 using namespace std;
 
@@ -27,11 +28,13 @@ public:
 	list<shared_ptr<Edge>> adj;
 
 
+
 	long getColor();
 	void setColor(long newColor);
 	string getName();
 	void setName(string newName);
 	string toString();
+
 	bool operator<(const Vertex& lhs) const;
 	bool operator>(const Vertex& rhs) const;
 	bool operator<=(const Vertex& rhs) const;
