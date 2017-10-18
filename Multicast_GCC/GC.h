@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class GC:colorFunct{
+class GC:colorFunct<Graph, Simulation>{
 
 
 public:
@@ -28,12 +28,11 @@ public:
 		set<shared_ptr<Vertex>> I;
 
 		// Variable to enumarate "Colors"
-		int Colors = 0;
-		int numberOfColors = 0;
-
+		
 		while(V.size() != 0)
 		{
 			// Initialize I with v
+			I.clear();
 			I.insert(V.begin(), ++V.begin());
 			Vertex* v = *V.begin()->get;
 			
@@ -55,41 +54,28 @@ public:
 
 				// Compare whether v' and v have the same user sets
 				if(T == T_not_v)
-				{
+					if(G->edgesAmongSets(notV, I))
+						I.insert(*not_v_itr);
 
-					// If there are no edges between v and v', then add v' to I
+			}// end For
 
-					// Iterators for v'
-					auto enot_v = (*not_v_itr)->adj.begin();
-					auto enot_v_end = (*not_v_itr)->adj.end();
+			// Color vertices in I with unique "Color"
+			for(auto I_color_itr = I.begin(); I_color_itr != I.end(); ++I_color_itr)
+				(*I_color_itr)->color = G->numberOfColors;
 
-					// Iterators for I
-					for (auto I_itr = I.begin(); I_itr != I.end(); ++I_itr)
-					{
+			// Increment to a new unique color
+			G->numberOfColors++;
 
-						auto ev = (*I_itr)->adj.begin();
-						auto ev_end = (*I_itr)->adj.end();
+			// Create a tempory placeholder for the new V, which is the difference of V and I
+			set<shared_ptr<Vertex>> nu_V;
 
-						has_edges_itr1 = find(enot_v, enot_v_end,  +"\"" + " -> " + "\"" + (*not_v_itr)->name);
-						has_edges_itr2 = find
-
-						if (has_edges_itr1 == enot_v_end && has_edges_itr2 == ev_end)
-						{
-
-
-						}
-
-					}
-
-
-					//(*begin).name + "\"" + " -> " + "\"" + (*end).name
-				}
-
+			// Compute the set difference of V - I
+			auto nu_V_itr_end = set_difference(V.begin(), V.end(), I.begin(), I.end(), nu_V.begin(), shPtrPred<Vertex>);
 			
+			// replace the old V with the new V which has fewer vertices
+			swap(V, nu_V);
 
-			}
-
-		}
+		}// end While
 
 	}
 
@@ -117,13 +103,11 @@ public:
 	}
 
 	template<class T>
-	struct shrdPtrPred: public binary_function(shared_ptr<T>, shared_ptr<T>, bool)
+	bool shPtrPred(const T& rhs, const T& lhs)
 	{
-		bool operator()(const T& rhs, const T& lhs)
-		{
-			return *rhs == *lhs;	
-		}
+		return *rhs == *lhs;	
+	}
 
-	};
+	
 
 };

@@ -42,6 +42,7 @@ class Graph
 
 	long numberOfVertices;
 	long numberOfEdges;
+	long numberOfColors;
 
 	/*
 	template<class T>

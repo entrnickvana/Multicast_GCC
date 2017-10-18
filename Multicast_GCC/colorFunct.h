@@ -3,14 +3,14 @@
 using namespace std;
 
 
-template<class G>
+template<class G, class S>
 class colorFunct
 {
     public:
     colorFunct(){};
     ~colorFunct(){};
 
-	virtual int operator()(G g) {};
+	virtual int operator()(G g,S s) {};
 
 	private:
 

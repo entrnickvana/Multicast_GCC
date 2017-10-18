@@ -74,6 +74,7 @@ int main()
 
 	sim1.mapRequestsToVertices(p1);
 	sim1.graph.plot("666");
+	
 
 
 	Graph gig;

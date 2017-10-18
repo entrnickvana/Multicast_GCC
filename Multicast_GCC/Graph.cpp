@@ -20,8 +20,7 @@ Graph::Graph(set<Media>* files_, set<User>* users_)
 {
 	this->files = files_;
 	this->users = users_;
-    
-
+    this->numberOfColors = 0;
 
 }
 
