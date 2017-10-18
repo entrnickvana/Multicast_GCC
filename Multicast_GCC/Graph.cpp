@@ -1,11 +1,14 @@
 
 
+#include "Simulation.h"
 #include "Graph.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <iterator>
+#include "colorFunct.h"
+#include "sharedPtr_CMP.h"
 
 
 using namespace std;
@@ -179,7 +182,7 @@ int Graph::sharedEdges(shared_ptr<Vertex> begin, shared_ptr<Vertex> end)
 	return 0;
 }
 
-int Graph::edgesAmongSets(set<shared_ptr<Vertex>> a, set<shared_ptr<Vertex>> b)
+int Graph::edgesAmongSets(set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> a, set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> b)
 {
     int result_accumulator = 0;
     for(auto a_itr = a.begin(); a_itr != a.end(); ++a_itr)
@@ -188,10 +191,15 @@ int Graph::edgesAmongSets(set<shared_ptr<Vertex>> a, set<shared_ptr<Vertex>> b)
                 return 1;
 }
 
+int Graph::colorGraph(Simulation* s1)
+{
+	return this->colorAlgorithm->operator()(this,s1);
+}
+
 
 template<typename SortFunc>
 int Graph::color(Graph g1, SortFunc colorFunc)
 {
-	return colorFunc(g1);
+	return 0;
 }
 

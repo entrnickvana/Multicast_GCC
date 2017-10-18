@@ -13,6 +13,9 @@
 #include "Simulation.h"
 #include<memory>
 #include "mCMP.h"
+#include "colorFunct.h"
+#include "greedyColoring.h"
+#include "GC.h"
 
 /*
 	Left to do
@@ -55,6 +58,9 @@ int main()
 
 
 	Simulation sim1("G_CODE");
+	Graph theGraph;
+
+	sim1.graph = &theGraph;
 
 	// Generate 4 Files, divided into 4 Packets each, of 128 bytes per file
 	sim1.generateFiles(4,4,128);
@@ -73,13 +79,20 @@ int main()
 	set<pair<shared_ptr<Media>, shared_ptr<User>>> p1(sim1.request(4));
 
 	sim1.mapRequestsToVertices(p1);
-	sim1.graph.plot("666");
+
+	GC gc;
 	
 
+	sim1.graph->colorAlgorithm = (colorFunct<Graph, Simulation>*)&gc;
+
+	int result = sim1.graph->colorGraph(&sim1);
+	
+	sim1.graph->plot("gizzle");
+	
 
 	Graph gig;
 
-
+	cout << "Your result: " << result << endl;
 
 	getchar();
 

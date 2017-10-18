@@ -9,10 +9,11 @@
 #include "Vertex.h"
 #include "Edge.h"
 #include <algorithm>
+#include "sharedPtr_CMP.h"
 
 using namespace std;
 
-class GC:colorFunct<Graph, Simulation>{
+class GC: public colorFunct<Graph*, Simulation*>{
 
 
 public:
@@ -21,11 +22,18 @@ public:
 
 	int operator()(Graph* G, Simulation* sim){
 
-	// Construct set of all Vertices in Graph
-		set<shared_ptr<Vertex>> V(G->Vertices.begin(), G->Vertices.end());
-		set<shared_ptr<Vertex>> notV(V.begin(), V.end());
+		sharedPtr_CMP<Vertex> cmp;
+
+		// Construct set of all Vertices in Graph
+		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> V(G->Vertices.begin(), G->Vertices.end());
+
+		//	set<shared_ptr<Vertex>> notV(V.begin(), V.end());
+		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> notV(G->Vertices.begin(), G->Vertices.end());
+		notV.insert(++V.begin(), V.end());
+
 		// Accumulator
-		set<shared_ptr<Vertex>> I;
+		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> I;
+
 
 		// Variable to enumarate "Colors"
 		
@@ -34,7 +42,9 @@ public:
 			// Initialize I with v
 			I.clear();
 			I.insert(V.begin(), ++V.begin());
-			Vertex* v = *V.begin()->get;
+
+			// Assign v the raw pointer of the first element of V of type shared_ptr<Vertex>
+			Vertex* v = (*V.begin()).get();
 			
 			// Copy V into V', omit first element of V which represents v:    => V' = V\v
 			notV.clear();
@@ -53,7 +63,7 @@ public:
 				T.insert(*(*(V.begin()))->requestingUser);
 
 				// Compare whether v' and v have the same user sets
-				if(T == T_not_v)
+				if(T == T_not_v)	//if v' and I share any edges between them
 					if(G->edgesAmongSets(notV, I))
 						I.insert(*not_v_itr);
 
@@ -67,10 +77,10 @@ public:
 			G->numberOfColors++;
 
 			// Create a tempory placeholder for the new V, which is the difference of V and I
-			set<shared_ptr<Vertex>> nu_V;
+			set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> nu_V;
 
 			// Compute the set difference of V - I
-			auto nu_V_itr_end = set_difference(V.begin(), V.end(), I.begin(), I.end(), nu_V.begin(), shPtrPred<Vertex>);
+			set_difference(V.begin(), V.end(), I.begin(), I.end(), inserter(nu_V, nu_V.begin()), cmp);
 			
 			// replace the old V with the new V which has fewer vertices
 			swap(V, nu_V);
@@ -79,10 +89,7 @@ public:
 
 	}
 
-	
 
-
-	
 
 	private:
 
@@ -101,13 +108,5 @@ public:
 		}
 
 	}
-
-	template<class T>
-	bool shPtrPred(const T& rhs, const T& lhs)
-	{
-		return *rhs == *lhs;	
-	}
-
-	
 
 };

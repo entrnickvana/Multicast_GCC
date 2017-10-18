@@ -10,7 +10,7 @@ class colorFunct
     colorFunct(){};
     ~colorFunct(){};
 
-	virtual int operator()(G g,S s) {};
+	virtual int operator()(G* g, S* s) { return 0; };
 
 	private:
 

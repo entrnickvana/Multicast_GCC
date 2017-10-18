@@ -2,16 +2,17 @@
 
 
 //Testing source control comment
-#include<set>
+#include <set>
 #include "Media.h"
-#include "Graph.h"
-#include<memory>
-#include<unordered_set>
-#include"Packet.h"
-#include<fstream>
-
+#include <memory>
+#include <unordered_set>
+#include "Packet.h"
+#include <fstream>
+#include "Vertex.h"
+#include "Edge.h"
 using namespace std;
 
+class Graph;
 
 class Simulation
 {
@@ -26,7 +27,7 @@ class Simulation
         set<shared_ptr<Media>>* mediaPTR;
 		set<shared_ptr<User>>* usersPTR;
         string graphName;
-        Graph graph;
+        Graph* graph;
         vector<Packet> setOfAllPackets;
         vector<Packet> randomizedPackets;
 		unsigned int packetsPerUser;
@@ -50,8 +51,10 @@ class Simulation
 		void generateFiles(unsigned int numberOfFiles_, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_);
 		set<Media> generateFiles(string fileNameDirectory);
 
+		/*
         template<typename T>
         void randomizeWithFunctor(T functor);
+		*/
 		
 		void distributeMedia();
 

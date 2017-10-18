@@ -1,10 +1,11 @@
 
 
+#include "Graph.h"
+#include"Simulation.h"
 #include<set>
 #include"Media.h"
 #include"User.h"
 #include<string>
-#include"Simulation.h"
 #include<unordered_set>
 #include<unordered_map>
 #include<algorithm>
@@ -15,8 +16,10 @@
 #include<memory>
 #include<cstdlib>
 #include<ctime>
+#include "Vertex.h"
 
 
+using namespace std;
 
 Simulation::Simulation()
 {
@@ -44,8 +47,7 @@ Simulation::Simulation(set<shared_ptr<Media>>* mediaArg, set<shared_ptr<User>>* 
 {
 	this->mediaPTR->insert(mediaArg->begin(), mediaArg->end());
 	this->usersPTR->insert(usersArg->begin(), usersArg->end());
-    this->graphName = "" + graphNameArg;
-	
+    this->graphName = "" + graphNameArg; 
 
     //if(mediaPTR->begin()->packetsOfMedia.size() == 0)
     //{
@@ -64,7 +66,7 @@ void Simulation::printSimulation()
 {
 	printUsers();
 	printFiles();
-	this->graph.plot("666");
+	this->graph->plot("666");
 	
 }
 
@@ -356,7 +358,7 @@ set<shared_ptr<Vertex>> Simulation::createVertices(set<Packet>* identityPackets,
 shared_ptr<Vertex> Simulation::createVertex(shared_ptr<Packet> identityPacket, shared_ptr<User> requestingUser)
 {
 
-	shared_ptr<Vertex> v = make_shared<Vertex>(identityPacket, requestingUser, this->graph.numberOfVertices++);
+	shared_ptr<Vertex> v = make_shared<Vertex>(identityPacket, requestingUser, this->graph->numberOfVertices++);
 
 
 	return v;
@@ -386,7 +388,7 @@ void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<Us
 
 		//Insert All Vertices
 
-		this->graph.addVertices(createVertices(&neededPackets, u));
+		this->graph->addVertices(createVertices(&neededPackets, u));
 	}
 
 	cout << "/////////////////////// Interference Comparison ////////////////" << endl << endl;
@@ -394,11 +396,11 @@ void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<Us
 
 
 	//Iterate over each user to check whether there should be an edge
-	for (auto vItr = this->graph.Vertices.begin(); vItr != this->graph.Vertices.end(); ++vItr)
+	for (auto vItr = this->graph->Vertices.begin(); vItr != this->graph->Vertices.end(); ++vItr)
 	{
 		Vertex current = *vItr->get();
 
-		for (auto otherItr = graph.Vertices.begin(); otherItr != graph.Vertices.end(); ++otherItr)
+		for (auto otherItr = graph->Vertices.begin(); otherItr != graph->Vertices.end(); ++otherItr)
 		{
 			Vertex otherVertex = *otherItr->get();
 			if (otherVertex.name.compare( current.name) != 0)
@@ -408,7 +410,7 @@ void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<Us
 				if (it == otherVertex.requestingUser->cachedPackets.end())
 				{
 					cout << otherVertex.name << "->" << current.name << endl;
-					this->graph.addEdge(createEdge(*otherItr, *vItr));
+					this->graph->addEdge(createEdge(*otherItr, *vItr));
 				}
 
 			}

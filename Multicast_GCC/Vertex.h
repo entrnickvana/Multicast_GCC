@@ -9,6 +9,7 @@
 #include <memory>
 #include "Edge.h"
 #include "colorFunct.h"
+#include "sharedPtr_CMP.h"
 
 using namespace std;
 
@@ -39,12 +40,13 @@ public:
 	bool operator>(const Vertex& rhs) const;
 	bool operator<=(const Vertex& rhs) const;
 	bool operator>=(const Vertex& rhs) const;
-	bool operator==(const Vertex& rhs) const;
+    bool operator==(const Vertex& rhs) const;
 	bool operator!=(const Vertex& rhs) const;
+	//const Vertex& operator =(const Vertex& rhs) const;
 	
 
 
-private:
+	private:
 
 };
 

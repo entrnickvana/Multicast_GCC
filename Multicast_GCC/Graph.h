@@ -6,8 +6,12 @@
 #include "Vertex.h"
 #include "Edge.h"
 #include <memory>
+#include "colorFunct.h"
+#include "sharedPtr_CMP.h"
 
 using namespace std;
+
+class Simulation;
 
 class Graph
 {
@@ -22,10 +26,8 @@ class Graph
 	set<Media>* files;
 	set<User>* users;
 
-		/*
-			template<typename SortFunc>
-			int color(Graph g1, SortFunc colorFunc);
-		*/
+	colorFunct<Graph, Simulation>* colorAlgorithm;
+		
 	bool addVertex(shared_ptr<Vertex> v);
 	bool addEdge(shared_ptr<Edge> e);
 	bool addVertices(set<shared_ptr<Vertex>> vertices);
@@ -38,25 +40,14 @@ class Graph
 	bool packetsAreEquivalent(Vertex lhs, Vertex rhs);
 	int	sharedEdges(shared_ptr<Vertex> begin, shared_ptr<Vertex> end);
 
-	int edgesAmongSets(set<shared_ptr<Vertex>> a, set<shared_ptr<Vertex>> b);
+	int edgesAmongSets(set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> a, set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> b);
+
+
+	int colorGraph(Simulation* s1);
 
 	long numberOfVertices;
 	long numberOfEdges;
 	long numberOfColors;
-
-	/*
-	template<class T>
-	struct shrdPtrPred1: public binary_function(shared_ptr<T>, shared_ptr<T>, bool)
-	{
-		bool operator()(const T& rhs, const T& lhs)
-		{
-			return *rhs == *lhs;	
-		}
-
-	};
-
-	*/
-
 
     private:
 

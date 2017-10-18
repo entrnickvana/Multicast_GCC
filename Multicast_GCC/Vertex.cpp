@@ -5,6 +5,7 @@
 #include "Vertex.h"
 #include "Edge.h"
 #include "mCMP.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -86,5 +87,14 @@ bool Vertex::operator!=(const Vertex& rhs) const
 {
 	return !(*this == rhs);
 }
+
+/*
+const Vertex& Vertex::operator =(const Vertex& rhs) const
+{
+	swap(rhs, *this);
+	return *this;
+}
+
+*/
 
 
