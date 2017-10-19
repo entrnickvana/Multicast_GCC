@@ -14,7 +14,6 @@
 #include<memory>
 #include "mCMP.h"
 #include "colorFunct.h"
-#include "greedyColoring.h"
 #include "GC.h"
 
 /*
@@ -62,13 +61,23 @@ int main()
 
 	sim1.graph = &theGraph;
 
+	int ratioM_div_sizeF = 0;
+
+	int numFiles = 6;
+	int numPacketsPerFile = 4;
+	int bytesPerPacket = 64;
+	int totalPackets = numFiles*numPacketsPerFile;
+	int sizeUserCacheBytes = 64*8*4;
+
+
+
 	// Generate 4 Files, divided into 4 Packets each, of 128 bytes per file
-	sim1.generateFiles(4,4,128);
+	sim1.generateFiles(numFiles,numPacketsPerFile,bytesPerPacket);
 
 	// Generate 3 Users, each with a cache size M = 512 bytes
-	sim1.generateUsers(3,512);
+	sim1.generateUsers(8, sizeUserCacheBytes);
 
-	// Randomize the distribution of packets
+	// Randomize the distribution of packeBytes
 	sim1.randomizePackets();
 
 	// 
@@ -81,9 +90,8 @@ int main()
 	sim1.mapRequestsToVertices(p1);
 
 	GC gc;
-	
 
-	sim1.graph->colorAlgorithm = (colorFunct<Graph, Simulation>*)&gc;
+	sim1.graph->colorAlgorithm = &gc;
 
 	int result = sim1.graph->colorGraph(&sim1);
 	

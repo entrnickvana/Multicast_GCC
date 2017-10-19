@@ -13,7 +13,7 @@
 
 using namespace std;
 
-class GC: public colorFunct<Graph*, Simulation*>{
+class GC: public colorFunct{
 
 
 public:
@@ -21,6 +21,8 @@ public:
 	~GC(){};
 
 	int operator()(Graph* G, Simulation* sim){
+
+		G->numberOfColors = 0;
 
 		sharedPtr_CMP<Vertex> cmp;
 
@@ -56,8 +58,8 @@ public:
 				set<User> T_not_v;
 				set<User> T;
 
-				getT(**not_v_itr, G, &T_not_v);
-				getT(**not_v_itr, G, &T);
+				getT(**not_v_itr, G, &T_not_v, sim);
+				getT(**not_v_itr, G, &T, sim);
 
 				T_not_v.insert( *((*not_v_itr)->requestingUser));
 				T.insert(*(*(V.begin()))->requestingUser);
@@ -87,22 +89,23 @@ public:
 
 		}// end While
 
+		return G->numberOfColors;
 	}
 
 
 
 	private:
 
-	void getT(Vertex v, Graph* G, set<User>* Tv)
+	void getT(Vertex v, Graph* G, set<User>* Tv, Simulation* sim)
 	{
 
 		// Iterate over each user within the GRAPH
-		for(auto itr = G->users->begin(); itr != G->users->end(); ++itr)
+		for(auto itr = sim->usersPTR->begin(); itr != sim->usersPTR->end(); ++itr)
 		{
 			// If the current user "itr" cache contains packet associated to v, add that user
-			if(itr->cachedPackets.find(v.requestedPacket->packetName) != itr->cachedPackets.end())
+			if(itr->get()->cachedPackets.find(v.requestedPacket->packetName) != itr->get()->cachedPackets.end())
 			{
-				Tv->insert(*itr);
+				Tv->insert(**itr);
 			}
 
 		}

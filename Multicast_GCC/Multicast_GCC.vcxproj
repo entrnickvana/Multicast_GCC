@@ -125,7 +125,6 @@
     <ClInclude Include="Edge.h" />
     <ClInclude Include="GC.h" />
     <ClInclude Include="Graph.h" />
-    <ClInclude Include="greedyColoring.h" />
     <ClInclude Include="mCMP.h" />
     <ClInclude Include="Media.h" />
     <ClInclude Include="Packet.h" />

@@ -14,7 +14,7 @@ using namespace std;
 Vertex::Vertex()
 {
 	name = "NoName";
-	color = 0;
+	color = -1;
 	//std::string colorString = std::to_string(color);
 	//cout << "I am a vertex " + name + " of color " + colorString << endl;
 }

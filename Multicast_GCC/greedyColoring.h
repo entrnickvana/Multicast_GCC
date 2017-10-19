@@ -10,8 +10,8 @@
 
 
 using namespace std;
-template<class G, class S>
-class greedyColoring :colorFunct<Graph, Simulation>
+
+class greedyColoring :colorFunct
 {
 	/*
 		Algorithm 2 GCLC1

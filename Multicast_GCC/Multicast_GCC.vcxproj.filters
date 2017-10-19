@@ -68,9 +68,6 @@
     <ClInclude Include="colorFunct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="greedyColoring.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GC.h">
       <Filter>Header Files</Filter>
     </ClInclude>

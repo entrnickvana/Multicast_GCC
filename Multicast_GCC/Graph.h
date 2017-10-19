@@ -6,12 +6,12 @@
 #include "Vertex.h"
 #include "Edge.h"
 #include <memory>
-#include "colorFunct.h"
 #include "sharedPtr_CMP.h"
 
 using namespace std;
 
 class Simulation;
+class colorFunct;
 
 class Graph
 {
@@ -26,7 +26,7 @@ class Graph
 	set<Media>* files;
 	set<User>* users;
 
-	colorFunct<Graph, Simulation>* colorAlgorithm;
+	colorFunct* colorAlgorithm;
 		
 	bool addVertex(shared_ptr<Vertex> v);
 	bool addEdge(shared_ptr<Edge> e);
@@ -34,6 +34,7 @@ class Graph
 	bool addEdges(set<shared_ptr<Edge>> edges);
     bool removeEdge(shared_ptr<Edge> e);
 	bool removeVertex(shared_ptr<Vertex> v);
+	string mapToColor(int clr);
     void plot(string plotNumber);
 	shared_ptr<User> getAssociatedUser(Vertex v);
 	shared_ptr<Packet> getAssociatedPacket(Vertex v);

@@ -9,6 +9,8 @@
 #include <iterator>
 #include "colorFunct.h"
 #include "sharedPtr_CMP.h"
+#include <iomanip>
+#include <sstream>
 
 
 using namespace std;
@@ -69,8 +71,6 @@ bool Graph::removeEdge(shared_ptr<Edge> e)
 {
     for(unsigned i = 0; i < Edges.size(); i++)
     {
-
-        
         if(e->getIdentity().compare(Edges[i]->getIdentity()) == 0)
         {
 			Edges.erase(Edges.begin() + i);
@@ -98,30 +98,49 @@ bool Graph::removeVertex(shared_ptr<Vertex> v)
     return false;
 }
 
+string Graph::mapToColor(int clr)
+{
+	
+	unsigned long interval = 2396743;
+	unsigned long ceiling = 16777215;
+
+	stringstream stream;
+	stream << std::hex << (((unsigned long)clr + 1)*interval + interval) % ceiling;
+	string result(stream.str());	
+
+	return "#" + result;
+}
+
 
 
 void Graph::plot(string plotNumber)
 {
 
-    ofstream graphFile;
-    string x = plotNumber;
-    graphFile.open("gf" + x + ".txt");
-    
+	ofstream graphFile;
+	string x = plotNumber;
+	graphFile.open("gf" + x + ".txt");
 
-    //Print beginning
-    graphFile << "digraph G{\n";
 
-    //Print each vertex
-    for(unsigned i = 0; i < Vertices.size(); i++)
-    {
-        graphFile << "\"" + Vertices[i]->name + "\"\n"; 
+	//Print beginning
+	graphFile << "digraph G{\n";
+
+	//Print each vertex
+	for (unsigned i = 0; i < Vertices.size(); i++)
+	{
+
+		if (Vertices[i]->color > -1)
+			graphFile << Vertices[i]->name + " [ style = " + "\"" + "filled" + "\"" + " color = " + "\"" + mapToColor(Vertices[i]->color) + "\"" + "]\n";
+		else
+			graphFile << Vertices[i]->name + "\n";
+       // graphFile << "\"" + Vertices[i]->name + "\"\n";         
     }
 
     //Print each Edge
     for(unsigned j = 0; j < Edges.size(); j++)
     {
 
-        graphFile << "\"" + Edges[j]->getIdentity() + "\"\n";
+        graphFile <<  Edges[j]->getIdentity() + "\n";
+        //graphFile << "\"" + Edges[j]->getIdentity() + "\"\n";        
     }
 
 /*  The more efficient traversal of a vector
@@ -193,13 +212,9 @@ int Graph::edgesAmongSets(set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> a, set<
 
 int Graph::colorGraph(Simulation* s1)
 {
-	return this->colorAlgorithm->operator()(this,s1);
+	return this->colorAlgorithm->operator()(this, s1);
 }
 
 
-template<typename SortFunc>
-int Graph::color(Graph g1, SortFunc colorFunc)
-{
-	return 0;
-}
+
 

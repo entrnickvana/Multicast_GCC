@@ -31,7 +31,8 @@ Edge::Edge(shared_ptr<Vertex> begin_, shared_ptr<Vertex> end_)
 
 string Edge::getIdentity() const
 {
-	return  (*begin).name + "\"" + " -> " + "\"" + (*end).name;
+	//return  (*begin).name + "\"" + " -> " + "\"" + (*end).name;
+	return  (*begin).name + " -> "  + (*end).name;
 }
 
 bool Edge::operator<(const Edge & lhs) const

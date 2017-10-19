@@ -125,7 +125,7 @@ void Simulation::randomizePackets()
 		vector<Packet> nuRandomizedSetOfPackets(setOfAllPackets.begin(), setOfAllPackets.end());
 
 		// Randomly shuffle the packets stored in the vector
-		random_shuffle(nuRandomizedSetOfPackets.begin(), nuRandomizedSetOfPackets.end());
+		random_shuffle(nuRandomizedSetOfPackets.begin(), nuRandomizedSetOfPackets.begin());
 
 		// Use the already allocated randomized Packets Vector to avoid dangling pointers
 		this->randomizedPackets.insert(randomizedPackets.end(), nuRandomizedSetOfPackets.begin(), nuRandomizedSetOfPackets.end());
