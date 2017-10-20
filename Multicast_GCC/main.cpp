@@ -63,29 +63,44 @@ int main()
 
 	int ratioM_div_sizeF = 0;
 
-	int numFiles = 6;
-	int numPacketsPerFile = 4;
+
+	int numFiles = 2;
+
+	int filesPerUser = 1;
+
+	int numUsers = 3;
+	int numPacketsPerFile = 3;
 	int bytesPerPacket = 64;
 	int totalPackets = numFiles*numPacketsPerFile;
-	int sizeUserCacheBytes = 64*8*4;
 
 
+	int sizeUserCacheBytes =		64		*		3		*		3;
+	//								Packet Size		num Users		Packets/File
 
-	// Generate 4 Files, divided into 4 Packets each, of 128 bytes per file
-	sim1.generateFiles(numFiles,numPacketsPerFile,bytesPerPacket);
 
-	// Generate 3 Users, each with a cache size M = 512 bytes
-	sim1.generateUsers(8, sizeUserCacheBytes);
+	// Generate |F| files, with f partitions of packets
 
-	// Randomize the distribution of packeBytes
+	sim1.generateFiles(				numFiles,			//	Number of files to generate
+									numPacketsPerFile,	//	Number of packets per file
+									bytesPerPacket		//	Number of Bytes per Packet
+						);
+
+	// Generate |U| users each with size M cache
+	sim1.generateUsers(				numUsers,			//	Number of Users
+									sizeUserCacheBytes	//	Cache size per User => Packets	*	BytesPerPacket
+						);
+
+	// Randomize the Set of All Packets
 	sim1.randomizePackets();
 
-	// 
+
 	sim1.distributeMedia();
+	//sim1.distributeMedia(1);
+
 	sim1.printFiles();
 	sim1.printUsers();
 
-	set<pair<shared_ptr<Media>, shared_ptr<User>>> p1(sim1.request(4));
+	set<pair<shared_ptr<Media>, shared_ptr<User>>> p1(sim1.request(1));
 
 	sim1.mapRequestsToVertices(p1);
 
@@ -93,10 +108,12 @@ int main()
 
 	sim1.graph->colorAlgorithm = &gc;
 
+	sim1.graph->plot("BEFORE_COLORING_1");
+
 	int result = sim1.graph->colorGraph(&sim1);
 	
-	sim1.graph->plot("gizzle");
-	
+	sim1.graph->plot("AFTER_COLORING_1");
+
 
 	Graph gig;
 

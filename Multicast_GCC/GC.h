@@ -30,8 +30,10 @@ public:
 		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> V(G->Vertices.begin(), G->Vertices.end());
 
 		//	set<shared_ptr<Vertex>> notV(V.begin(), V.end());
-		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> notV(G->Vertices.begin(), G->Vertices.end());
-		notV.insert(++V.begin(), V.end());
+		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> notV(++V.begin(), V.end());
+		//notV.erase(*V.begin());
+		
+		//notV.insert(++V.begin(), V.end());
 
 		// Accumulator
 		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> I;

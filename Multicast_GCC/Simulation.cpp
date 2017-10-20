@@ -154,6 +154,8 @@ void Simulation::generateUsers(unsigned int numberOfUsers_, unsigned int cacheSi
 		this->usersPTR->insert(temp);
 	}
 
+	this->numberOfUsers = numberOfUsers_;
+
 }
 
 void Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberOfPackets, unsigned int mediaSizeInBytes_)
@@ -190,7 +192,9 @@ void Simulation::generateFiles(unsigned int numberOfFiles_, unsigned int numberO
 		tempMediaVec.back().packetize(numberOfPackets);*/
 
 	}
-	
+
+	this->numberOfFiles = numberOfFiles_;
+	this->packetsPerFile = numberOfPackets;
 
 }
 
@@ -204,8 +208,14 @@ set<Media> Simulation::generateFiles(string fileNameDirectory)
 
 void Simulation::distributeMedia()
 {
+
+	// Calculate the total number of packets which are elements F_i
     unsigned int totalNumberOfPackets = setOfAllPackets.size();
+
+	// The sum of M_i in terms of packets
     unsigned int collectiveUserCapacity = usersPTR->size() * usersPTR->begin()->get()->cacheSize;
+
+	// This should be a negative number => There is more storage capacity among all users than storage capacity required for the Media catalog
     unsigned int numOfUncachedPackets = totalNumberOfPackets - collectiveUserCapacity;
 
 	// Can we distrubute the packets uniquely among each user
@@ -213,7 +223,7 @@ void Simulation::distributeMedia()
 	// If not, 
 
 
-
+	//
 	this->packetsPerUser = totalNumberOfPackets / usersPTR->size();
 
 	if (this->packetsPerUser < 1)
@@ -245,6 +255,59 @@ void Simulation::distributeMedia()
     
 }
 
+void Simulation::distributeMedia(float filesPerUser)
+{
+
+	//Check if Users have been generated
+	if(this->usersPTR->size() == 0)
+		return;
+	//Check if Files have been generated
+	if (this->mediaPTR->size() == 0)
+		return;
+
+	this->numberOfUsers = usersPTR->size();
+	this->numberOfFiles = mediaPTR->size();
+	this->filesPerUser = filesPerUser;
+
+
+	// Calculate Packets Per User
+	this->packetsPerUser = this->filesPerUser * this->packetsPerFile;
+
+	// Prevent Divide by Zero
+	if (this->packetsPerUser < 1)
+		this->packetsPerUser = 1;
+
+	////////////// IGNORE, IMPLEMENT LATER IF NECASSARY /////////////////////////
+	unsigned int userSubsetCounter = 0;
+	unsigned int moddedCounter = 0;
+	/////////////////////////////////////////////////////////////////////////////
+	
+	int counter = 0;
+	
+	set<shared_ptr<User>> nuUserSet;
+
+	// For every User
+	for(auto user_itr = usersPTR->begin(); user_itr != usersPTR->end(); ++user_itr)
+	{
+		shared_ptr<User> modifiedUser = *user_itr;
+
+		// Fill up to M Bytes in terms of packets => M/(BytesPerPacket)
+		for (unsigned int i = 0; i < packetsPerUser; i++)
+		{
+			// if every element of randomized packets has been used, assigned packets will return to the beginning of randomized packets
+			modifiedUser->addPacket(this->randomizedPackets.at( (counter++ % this->randomizedPackets.size()) ));
+		}
+
+		nuUserSet.insert(modifiedUser);
+		
+	}
+
+	this->usersPTR->clear();
+	usersPTR->insert(nuUserSet.begin(), nuUserSet.end());
+    
+}
+
+
 set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request(unsigned int numOfRequests)
 {
 	srand(0);
@@ -254,7 +317,6 @@ set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request(unsigned int 
 	int tempIndex2;
 
 	cout << "/////////////////      REQUEST #" << requestNumber << "      ////////////////////////" << endl << endl;
-
 
 
 	for (unsigned int i = 0; i < numOfRequests; i++)

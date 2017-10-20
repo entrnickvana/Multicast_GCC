@@ -30,7 +30,15 @@ class Simulation
         Graph* graph;
         vector<Packet> setOfAllPackets;
         vector<Packet> randomizedPackets;
+
+		unsigned int numberOfUsers;
+		unsigned int numberOfFiles;
+		unsigned int packetsPerFile;
+		float filesPerUser;
 		unsigned int packetsPerUser;
+		unsigned int packetSize;
+
+		
 		vector<string> nameBuilder;
 		vector<pair<shared_ptr<Media>, shared_ptr<User>>> requestHistory;
 		unsigned int requestNumber;
@@ -57,6 +65,9 @@ class Simulation
 		*/
 		
 		void distributeMedia();
+
+		void distributeMedia(float filesPerUser);
+
 
 		set<pair<shared_ptr<Media>, shared_ptr<User>>> request(unsigned int numOfRequests);
 

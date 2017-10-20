@@ -1,0 +1,38 @@
+digraph G{
+v0 [ style = "filled" color = "#49248e"]
+v1 [ style = "filled" color = "#49248e"]
+v2 [ style = "filled" color = "#6db6d5"]
+v3 [ style = "filled" color = "#6db6d5"]
+v4 [ style = "filled" color = "#6db6d5"]
+v5 [ style = "filled" color = "#6db6d5"]
+v1 -> v0
+v2 -> v0
+v3 -> v0
+v4 -> v0
+v5 -> v0
+v0 -> v1
+v2 -> v1
+v3 -> v1
+v4 -> v1
+v5 -> v1
+v0 -> v2
+v1 -> v2
+v3 -> v2
+v4 -> v2
+v5 -> v2
+v0 -> v3
+v1 -> v3
+v2 -> v3
+v4 -> v3
+v5 -> v3
+v0 -> v4
+v1 -> v4
+v2 -> v4
+v3 -> v4
+v5 -> v4
+v0 -> v5
+v1 -> v5
+v2 -> v5
+v3 -> v5
+v4 -> v5
+}
