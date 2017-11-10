@@ -29,8 +29,13 @@ public:
 		// Construct set of all Vertices in Graph
 		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> V(G->Vertices.begin(), G->Vertices.end());
 
+
 		//	set<shared_ptr<Vertex>> notV(V.begin(), V.end());
-		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> notV(++V.begin(), V.end());
+		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> notV(V.begin(), V.end());
+
+		
+		notV.erase(notV.begin());
+
 		//notV.erase(*V.begin());
 		
 		//notV.insert(++V.begin(), V.end());
@@ -38,8 +43,14 @@ public:
 		// Accumulator
 		set<shared_ptr<Vertex>, sharedPtr_CMP<Vertex>> I;
 
+		cout << "The graph contains " << V.size() << " vertices\nEntering graph at Vertex: " << V.begin()->get()->name << endl << endl;
+
+
 
 		// Variable to enumarate "Colors"
+
+		int v_counter = 0;
+		int init_size = V.size();
 		
 		while(V.size() != 0)
 		{
@@ -47,8 +58,10 @@ public:
 			I.clear();
 			I.insert(V.begin(), ++V.begin());
 
+
 			// Assign v the raw pointer of the first element of V of type shared_ptr<Vertex>
 			Vertex* v = (*V.begin()).get();
+
 			
 			// Copy V into V', omit first element of V which represents v:    => V' = V\v
 			notV.clear();
@@ -60,16 +73,21 @@ public:
 				set<User> T_not_v;
 				set<User> T;
 
+				cout <<"\r" << v_counter << "/" << init_size << "Compare:\t " << V.begin()->get()->name << "\t" << not_v_itr->get()->name;
+
 				getT(**not_v_itr, G, &T_not_v, sim);
 				getT(**not_v_itr, G, &T, sim);
-
+				
 				T_not_v.insert( *((*not_v_itr)->requestingUser));
 				T.insert(*(*(V.begin()))->requestingUser);
 
 				// Compare whether v' and v have the same user sets
 				if(T == T_not_v)	//if v' and I share any edges between them
-					if(G->edgesAmongSets(notV, I))
+					if (G->edgesAmongSets(notV, I)) 
+					{
 						I.insert(*not_v_itr);
+						v_counter++;
+					}
 
 			}// end For
 

@@ -17,6 +17,7 @@
 #include<cstdlib>
 #include<ctime>
 #include "Vertex.h"
+#include "sharedPtr_CMP.h"
 
 
 using namespace std;
@@ -29,8 +30,8 @@ Simulation::Simulation()
 Simulation::Simulation(string graphNameArg)
 {
 	graphName = graphNameArg;
-	this->mediaPTR = new set<shared_ptr<Media>>();
-	this->usersPTR = new set<shared_ptr<User>>();
+	this->mediaPTR = new set<shared_ptr<Media>,sharedPtr_CMP<Media>>();
+	this->usersPTR = new set<shared_ptr<User>, sharedPtr_CMP<User>>();
 
 }
 
@@ -316,7 +317,7 @@ set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request(unsigned int 
 	int tempIndex1;
 	int tempIndex2;
 
-	cout << "/////////////////      REQUEST #" << requestNumber << "      ////////////////////////" << endl << endl;
+	//cout << "/////////////////      REQUEST #" << requestNumber << "      ////////////////////////" << endl << endl;
 
 
 	for (unsigned int i = 0; i < numOfRequests; i++)
@@ -327,10 +328,9 @@ set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request(unsigned int 
 		vector<shared_ptr<User>> users(usersPTR->begin(), usersPTR->end());
 		vector<shared_ptr<Media>> media(mediaPTR->begin(), mediaPTR->end());
 
-
 		pair<shared_ptr<Media>, shared_ptr<User>> pTemp(media.at(tempIndex2), users.at(tempIndex1));
 		
-		cout << pTemp.second.get()->name << " requests " << pTemp.first.get()->mediaName << "   ";
+		//cout << pTemp.second.get()->name << " requests " << pTemp.first.get()->mediaName << "   ";
 
 		pairsToRequest.insert(pTemp);
 
@@ -338,13 +338,56 @@ set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request(unsigned int 
 
 	}
 
-	cout << endl << endl;
+	//cout << endl << endl;
 	
 	this->requestHistory.insert(requestHistory.end(),pairsToRequest.begin(), pairsToRequest.end());
 
 
 	return pairsToRequest;
 }
+
+set<pair<shared_ptr<Media>, shared_ptr<User>>> Simulation::request2(unsigned int numOfRequests)
+{
+	srand(7);
+	set<pair<shared_ptr<Media>, shared_ptr<User>>> pairsToRequest;  //(pairCMP);
+
+	int tempIndex1;
+	int tempIndex2;
+
+	cout << "/////////////////      REQUEST #" << requestNumber << "      ////////////////////////" << endl << endl;
+
+	vector<shared_ptr<User>> users(usersPTR->begin(), usersPTR->end());
+	vector<shared_ptr<Media>> media(mediaPTR->begin(), mediaPTR->end());
+
+	// For every request
+	for (unsigned int i = 0; i < numOfRequests; i++)
+	{
+
+		// For every user
+		for (unsigned int k = 0; k < this->usersPTR->size(); k++)
+		{
+			tempIndex1 = k;
+
+			tempIndex2 = rand() % mediaPTR->size();
+
+			pair<shared_ptr<Media>, shared_ptr<User>> pTemp(media.at(tempIndex2), users.at(tempIndex1));
+
+			//cout << pTemp.second.get()->name << " requests " << pTemp.first.get()->mediaName << "   ";
+
+			pairsToRequest.insert(pTemp);
+		}
+
+		requestNumber++;
+
+	}
+
+	//cout << endl << endl;
+	
+	this->requestHistory.insert(requestHistory.end(),pairsToRequest.begin(), pairsToRequest.end());
+
+	return pairsToRequest;
+}
+
 
 set<Packet> Simulation::identifyNeededPackets(pair<shared_ptr<Media>, shared_ptr<User>> requestToIdentify)
 {
@@ -438,10 +481,21 @@ void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<Us
 	//set<Packet> neededPackets;
 	//set<shared_ptr<Vertex>> verticesToAddToGraph;
 	unordered_map<string, Packet>::iterator it;
+	int dbg_map = 0;
+	int numV = 0;
+	int vCount = 0;
+	int numU = 0;
 
+	if(dbg_map) 
+	cout << "Mapping Requested packets for ... \t";
+
+	int compared_vertices = 0;
+	int number_edges = 0;
 	//Iterate through each user
 	for (auto reqItr = requestsToMap.begin(); reqItr != requestsToMap.end(); ++reqItr)
 	{
+		if(dbg_map)
+		cout << reqItr->first << "\t";
 
 		shared_ptr<User> u = reqItr->second;
 		const pair<shared_ptr<Media>, shared_ptr<User>> pr = *reqItr;
@@ -451,38 +505,73 @@ void Simulation::mapRequestsToVertices(set<pair<shared_ptr<Media>, shared_ptr<Us
 		//Insert All Vertices
 
 		this->graph->addVertices(createVertices(&neededPackets, u));
+
+		//cout << reqItr->second->name << endl;
+		if (dbg_map)
+			cout << "\r"<< "Mapping requested packets for ... \t";
 	}
 
-	cout << "/////////////////////// Interference Comparison ////////////////" << endl << endl;
+	//cout << "/////////////////////// Interference Comparison ////////////////" << endl << endl;
 
 
+	if (dbg_map)
+	cout << "\rComparisons:\t" << compared_vertices << "\tNum Edges:\t" << number_edges
+		<< "\tChecking for edges between ... \t";
 
+	numV = this->graph->Vertices.size();
 	//Iterate over each user to check whether there should be an edge
 	for (auto vItr = this->graph->Vertices.begin(); vItr != this->graph->Vertices.end(); ++vItr)
 	{
 		Vertex current = *vItr->get();
+		if (dbg_map)
+		cout << current.name << "  <-->  ";
 
+		
+		if (compared_vertices % 100 == 0) {
+			cout << "\rVertex: " << vCount << "/"<< numV <<  "\tVertex under comparison:\t" << current.name << "\tComparisons:\t" << compared_vertices;
+		}
+
+		vCount++;
 		for (auto otherItr = graph->Vertices.begin(); otherItr != graph->Vertices.end(); ++otherItr)
 		{
 			Vertex otherVertex = *otherItr->get();
+			
+			if(dbg_map)
+			cout << otherVertex.name;
+
 			if (otherVertex.name.compare( current.name) != 0)
 			{
 				it = otherVertex.requestingUser->cachedPackets.find(current.requestedPacket->packetName);
 
 				if (it == otherVertex.requestingUser->cachedPackets.end())
 				{
-					cout << otherVertex.name << "->" << current.name << endl;
+					//cout << otherVertex.name << "->" << current.name << endl;
 					this->graph->addEdge(createEdge(*otherItr, *vItr));
+					if (dbg_map)
+					cout << "\t EDGE FOUND!";
+
+					number_edges++;
 				}
+				else
+					if (dbg_map)
+					cout << "\t NO EDGE FOUND!";
 
 			}
-
+			compared_vertices++;
+			if (dbg_map)
+			cout << "\rComparisons:\t" << compared_vertices << "\tNum Edges:\t" << number_edges
+				<< "\tChecking for edges between ... \t"<< current.name << "  <-->  ";
 		}
 
-		
+		//cout << current.getName() << endl;
+		if (dbg_map)
+			cout << "\rComparisons:\t" << compared_vertices << "\tNum Edges:\t" << number_edges
+			<< "\tChecking for edges between ... \t";
 
 	}
 
+	cout << "\rComparisons:\t" << compared_vertices << "\tNum Edges:\t" << number_edges
+		<< "\tChecking for edges between ... \t\n";
 
 
 	/*  ////////////////  Description of Graph Construction and Definition  /////////////////////////

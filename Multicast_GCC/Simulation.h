@@ -10,6 +10,7 @@
 #include <fstream>
 #include "Vertex.h"
 #include "Edge.h"
+#include "sharedPtr_CMP.h"
 using namespace std;
 
 class Graph;
@@ -24,8 +25,8 @@ class Simulation
         Simulation(set<shared_ptr<Media>>* mediaArg, set<shared_ptr<User>>* usersArg, string graphNameArg, int packetsPerMedia);
         ~Simulation();
 
-        set<shared_ptr<Media>>* mediaPTR;
-		set<shared_ptr<User>>* usersPTR;
+        set<shared_ptr<Media>, sharedPtr_CMP<Media>>* mediaPTR;
+		set<shared_ptr<User>, sharedPtr_CMP<User>>* usersPTR;
         string graphName;
         Graph* graph;
         vector<Packet> setOfAllPackets;
@@ -70,6 +71,8 @@ class Simulation
 
 
 		set<pair<shared_ptr<Media>, shared_ptr<User>>> request(unsigned int numOfRequests);
+
+		set<pair<shared_ptr<Media>, shared_ptr<User>>> request2(unsigned int numOfRequests);
 
 		set<Packet> identifyNeededPackets(pair<shared_ptr<Media>, shared_ptr<User>> requestToIdentify);
 
